@@ -1,23 +1,6 @@
-import 'dart:math' show Random;
-
 import 'package:flutter/material.dart';
+import 'package:teatone/app.dart';
 import 'package:window_manager/window_manager.dart';
-
-const String appTitle = "TeaTone";
-
-ColorScheme randomColorScheme([
-  Brightness brightness = Brightness.light,
-]) {
-  final Random random = Random.secure();
-  final r = random.nextInt(128) + 128;
-  final g = random.nextInt(128) + 128;
-  final b = random.nextInt(128) + 128;
-  final seedColor = Color.fromRGBO(r, g, b, 1);
-  return ColorScheme.fromSeed(
-    seedColor: seedColor,
-    brightness: brightness,
-  );
-}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +9,7 @@ Future<void> main() async {
   WindowOptions windowOptions = const WindowOptions(
     size: Size(360, 560),
     center: true,
-    title: appTitle,
+    title: TeaToneApp.title,
     windowButtonVisibility: true,
     skipTaskbar: false,
   );
@@ -38,21 +21,4 @@ Future<void> main() async {
   });
 
   runApp(const TeaToneApp());
-}
-
-class TeaToneApp extends StatelessWidget {
-  const TeaToneApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: appTitle,
-      theme: ThemeData(
-        colorScheme: randomColorScheme(),
-        useMaterial3: true,
-      ),
-      debugShowCheckedModeBanner: false,
-      home: const Placeholder(),
-    );
-  }
 }
