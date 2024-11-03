@@ -22,12 +22,22 @@ class CaseView extends StatelessWidget {
                 horizontal: 24.0,
                 vertical: 16.0,
               ),
-              child: BlocBuilder<CaseBloc, CaseState>(
-                builder: (context, state) => switch (state) {
-                  CaseInitial() => const Placeholder(),
-                  CaseRecorderRunInProgress() => const RecorderView(),
-                  CaseRecorderRunPause() => const RecorderView(),
-                },
+              child: Container(
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: colorScheme.primaryContainer,
+                    width: 3.0,
+                  ),
+                ),
+                child: BlocBuilder<CaseBloc, CaseState>(
+                  builder: (context, state) => switch (state) {
+                    CaseInitial() => const WelcomeView(),
+                    CaseRecorderRunInProgress() => const RecorderView(),
+                    CaseRecorderRunPause() => const RecorderView(),
+                  },
+                ),
               ),
             ),
           ),
@@ -152,6 +162,25 @@ class CaseView extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class WelcomeView extends StatelessWidget {
+  const WelcomeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Center(
+      child: Text(
+        'Welcome!',
+        style: textTheme.displaySmall?.copyWith(
+          color: colorScheme.primary,
+        ),
       ),
     );
   }

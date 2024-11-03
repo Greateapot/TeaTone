@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatone/recorder/recorder.dart';
+import 'package:teatone/shared/shared.dart';
 
 class RecorderView extends StatelessWidget {
   const RecorderView({super.key});
@@ -9,45 +10,86 @@ class RecorderView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RecorderBloc, RecorderState>(
       builder: (context, state) => switch (state) {
-        RecorderInitial() => const Placeholder(),
-        RecorderRunInProgress() => _buildTimer(
-            context,
-            state.duration,
-            pause: false,
-          ),
-        RecorderRunPause() => _buildTimer(
-            context,
-            state.duration,
-            pause: true,
-          ),
+        RecorderInitial() => const SizedBox.expand(),
+        RecorderRunInProgress() => RecorderInProgressView(state.duration),
+        RecorderRunPause() => RecorderPausedView(state.duration),
       },
     );
   }
+}
 
-  Widget _buildTimer(
-    BuildContext context,
-    int duration, {
-    bool pause = false,
-  }) {
-    const TextStyle style = TextStyle(color: Colors.red);
+class RecorderInProgressView extends StatelessWidget {
+  const RecorderInProgressView(this.duration, {super.key});
 
-    final String minutes = _formatNumber(duration ~/ 60);
-    final String seconds = _formatNumber(duration % 60);
+  final int duration;
 
-    final Widget child = pause
-        ? BlinkingText('$minutes : $seconds', style: style)
-        : Text('$minutes : $seconds', style: style);
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [child],
+      children: [
+        Text(
+          'Recording In Progress',
+          style: textTheme.displaySmall?.copyWith(
+            color: colorScheme.primary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Divider(
+          height: 16.0,
+          thickness: 3.0,
+          indent: 80.0,
+          endIndent: 80.0,
+          color: colorScheme.primary,
+        ),
+        TimerWidget(
+          duration: duration,
+          style: textTheme.displaySmall?.copyWith(
+            color: colorScheme.primary,
+          ),
+        ),
+      ],
     );
   }
+}
 
-  String _formatNumber(int number) {
-    String numberStr = number.toString();
-    if (number < 10) numberStr = '0$numberStr';
-    return numberStr;
+class RecorderPausedView extends StatelessWidget {
+  const RecorderPausedView(this.duration, {super.key});
+
+  final int duration;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Recording Paused',
+          style: textTheme.displaySmall?.copyWith(
+            color: colorScheme.primary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Divider(
+          height: 16.0,
+          thickness: 3.0,
+          indent: 80.0,
+          endIndent: 80.0,
+          color: colorScheme.primary,
+        ),
+        TimerWidget(
+          duration: duration,
+          style: textTheme.displaySmall?.copyWith(
+            color: colorScheme.primary,
+          ),
+        ),
+      ],
+    );
   }
 }
