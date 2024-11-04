@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:teatone/shared/shared.dart';
+part of 'widgets.dart';
 
 class TimerWidget extends StatelessWidget {
   const TimerWidget({

@@ -54,3 +54,9 @@ final class CaseDeleteButtonPressed extends CaseEvent {
 final class CaseSettingsButtonPressed extends CaseEvent {
   const CaseSettingsButtonPressed();
 }
+
+final class CaseRecordSelected extends CaseEvent {
+  const CaseRecordSelected(this.path);
+
+  final String path;
+}

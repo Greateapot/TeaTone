@@ -18,3 +18,43 @@ final class CaseRecorderRunInProgress extends CaseState {
 final class CaseRecorderRunPause extends CaseState {
   const CaseRecorderRunPause();
 }
+
+final class CasePlayerRunInProgress extends CaseState {
+  const CasePlayerRunInProgress();
+}
+
+final class CasePlayerRunPause extends CaseState {
+  const CasePlayerRunPause();
+}
+
+final class CasePlayerRecordSelecting extends CaseState {
+  const CasePlayerRecordSelecting({
+    required this.records,
+    this.selectedIndex = 0,
+  });
+
+  final int selectedIndex;
+  final List records;
+
+  CasePlayerRecordSelecting copyWith(int selectedIndex) =>
+      CasePlayerRecordSelecting(
+        records: records,
+        selectedIndex: selectedIndex,
+      );
+}
+
+final class CaseDeletingRecordSelecting extends CaseState {
+  const CaseDeletingRecordSelecting({
+    required this.records,
+    this.selectedIndex = 0,
+  });
+
+  final int selectedIndex;
+  final List records;
+
+  CaseDeletingRecordSelecting copyWith(int selectedIndex) =>
+      CaseDeletingRecordSelecting(
+        records: records,
+        selectedIndex: selectedIndex,
+      );
+}

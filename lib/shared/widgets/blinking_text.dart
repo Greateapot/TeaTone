@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of 'widgets.dart';
 
 class BlinkingText extends StatefulWidget {
   const BlinkingText(this.data, {super.key, this.style});

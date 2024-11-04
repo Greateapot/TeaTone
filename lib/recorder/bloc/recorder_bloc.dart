@@ -19,7 +19,7 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
     on<RecorderPaused>(_onPaused);
     on<RecorderResumed>(_onResumed);
     on<RecorderStopped>(_onStopped);
-    on<_RecorderTimerTicked>(_onTicked);
+    on<_RecorderTimerTicked>(_onTimerTicked);
   }
 
   late final AudioRecorder _audioRecorder;
@@ -58,12 +58,13 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
     Emitter<RecorderState> emit,
   ) async {
     try {
-      if (state is RecorderRunInProgress) {
-        await _audioRecorder.pause();
-        // await _tickerStreamSubscription?.cancel();
-        _tickerStreamSubscription?.pause();
-        emit(RecorderRunPause(duration: state.duration));
-      }
+      if (state is! RecorderRunInProgress) return;
+
+      await _audioRecorder.pause();
+      // await _tickerStreamSubscription?.cancel();
+      _tickerStreamSubscription?.pause();
+
+      emit(RecorderRunPause(duration: state.duration));
     } catch (error, stackTrace) {
       if (kDebugMode) {
         dev.log(
@@ -80,12 +81,13 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
     Emitter<RecorderState> emit,
   ) async {
     try {
-      if (state is RecorderRunPause) {
-        await _audioRecorder.resume();
-        // await _startTimer();
-        _tickerStreamSubscription?.resume();
-        emit(RecorderRunInProgress(duration: state.duration));
-      }
+      if (state is! RecorderRunPause) return;
+
+      await _audioRecorder.resume();
+      // await _startTimer();
+      _tickerStreamSubscription?.resume();
+
+      emit(RecorderRunInProgress(duration: state.duration));
     } catch (error, stackTrace) {
       if (kDebugMode) {
         dev.log(
@@ -102,11 +104,12 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
     Emitter<RecorderState> emit,
   ) async {
     try {
-      if (state is RecorderRunInProgress || state is RecorderRunPause) {
-        await _audioRecorder.stop();
-        await _tickerStreamSubscription?.cancel();
-        emit(const RecorderInitial());
-      }
+      if (state is! RecorderRunInProgress && state is! RecorderRunPause) return;
+
+      await _audioRecorder.stop();
+      await _tickerStreamSubscription?.cancel();
+
+      emit(const RecorderInitial());
     } catch (error, stackTrace) {
       if (kDebugMode) {
         dev.log(
@@ -118,14 +121,14 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
     }
   }
 
-  void _onTicked(
+  void _onTimerTicked(
     _RecorderTimerTicked event,
     Emitter<RecorderState> emit,
   ) async {
     try {
-      if (state is RecorderRunInProgress) {
-        emit(RecorderRunInProgress(duration: event.duration));
-      }
+      if (state is! RecorderRunInProgress) return;
+
+      emit(RecorderRunInProgress(duration: state.duration + 1));
     } catch (error, stackTrace) {
       if (kDebugMode) {
         dev.log(
@@ -178,9 +181,8 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
 
     _tickerStreamSubscription = Stream<int>.periodic(
       const Duration(seconds: 1),
-      (_) => state.duration + 1,
     ).listen(
-      (duration) => add(_RecorderTimerTicked(duration)),
+      (_) => add(const _RecorderTimerTicked()),
       onError: (error) => _log(
         'Encountered an error in RecorderBloc._startTimer',
         error: error,

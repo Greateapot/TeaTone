@@ -1,7 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatone/case/case.dart';
+import 'package:teatone/player/player.dart';
+import 'package:teatone/record_selector/record_selector.dart';
 import 'package:teatone/recorder/recorder.dart';
+
+part 'home_view.dart';
+
+class CasePage extends StatelessWidget {
+  const CasePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CaseBloc>(
+          create: (context) => CaseBloc(),
+        ),
+        BlocProvider<RecorderBloc>(
+          create: (context) => RecorderBloc(),
+        ),
+        BlocProvider<PlayerBloc>(
+          create: (context) => PlayerBloc(),
+        ),
+        BlocProvider<RecordSelectorBloc>(
+          create: (context) => RecordSelectorBloc(),
+        ),
+      ],
+      child: const CaseView(),
+    );
+  }
+}
 
 class CaseView extends StatelessWidget {
   const CaseView({super.key});
@@ -33,9 +62,13 @@ class CaseView extends StatelessWidget {
                 ),
                 child: BlocBuilder<CaseBloc, CaseState>(
                   builder: (context, state) => switch (state) {
-                    CaseInitial() => const WelcomeView(),
+                    CaseInitial() => const HomeView(),
                     CaseRecorderRunInProgress() => const RecorderView(),
                     CaseRecorderRunPause() => const RecorderView(),
+                    CasePlayerRunInProgress() => const PlayerView(),
+                    CasePlayerRunPause() => const PlayerView(),
+                    CasePlayerRecordSelecting() => const RecordSelectorView(),
+                    CaseDeletingRecordSelecting() => const RecordSelectorView(),
                   },
                 ),
               ),
@@ -162,25 +195,6 @@ class CaseView extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class WelcomeView extends StatelessWidget {
-  const WelcomeView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Center(
-      child: Text(
-        'Welcome!',
-        style: textTheme.displaySmall?.copyWith(
-          color: colorScheme.primary,
-        ),
       ),
     );
   }

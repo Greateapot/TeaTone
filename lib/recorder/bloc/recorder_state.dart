@@ -11,19 +11,13 @@ sealed class RecorderState extends Equatable {
 
   @override
   List<Object?> get props => [state, duration];
-
-  @override
-  String toString() => 'RecorderState(state: $state, duration: $duration)';
 }
 
 final class RecorderInitial extends RecorderState {
   const RecorderInitial({
     super.state = RecordState.stop,
-    super.duration = -10,
+    super.duration = -1,
   });
-
-  @override
-  String toString() => 'RecorderInitial(state: $state, duration: $duration)';
 }
 
 final class RecorderRunInProgress extends RecorderState {
@@ -31,10 +25,6 @@ final class RecorderRunInProgress extends RecorderState {
     super.state = RecordState.record,
     required super.duration,
   });
-
-  @override
-  String toString() =>
-      'RecorderRunInProgress(state: $state, duration: $duration)';
 }
 
 final class RecorderRunPause extends RecorderState {
@@ -42,7 +32,4 @@ final class RecorderRunPause extends RecorderState {
     super.state = RecordState.pause,
     required super.duration,
   });
-
-  @override
-  String toString() => 'RecorderRunPause(state: $state,  duration: $duration)';
 }

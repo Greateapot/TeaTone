@@ -4,7 +4,7 @@ sealed class RecorderEvent extends Equatable {
   const RecorderEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class RecorderStarted extends RecorderEvent {
@@ -24,7 +24,5 @@ final class RecorderStopped extends RecorderEvent {
 }
 
 final class _RecorderTimerTicked extends RecorderEvent {
-  const _RecorderTimerTicked(this.duration);
-
-  final int duration;
+  const _RecorderTimerTicked();
 }
