@@ -1,7 +1,7 @@
-part of 'view.dart';
+part of 'deletor_view.dart';
 
-class LoadingView extends StatelessWidget {
-  const LoadingView({super.key});
+class DeletorProcessingView extends StatelessWidget {
+  const DeletorProcessingView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +10,7 @@ class LoadingView extends StatelessWidget {
 
     return Center(
       child: Text(
-        'Loading...',
+        'Are You Sure?',
         style: textTheme.displaySmall?.copyWith(
           color: colorScheme.primary,
         ),

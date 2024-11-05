@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:teatone/deletor/deletor.dart';
 import 'package:teatone/player/player.dart';
 import 'package:teatone/record_selector/record_selector.dart';
 import 'package:teatone/recorder/recorder.dart';
@@ -130,6 +131,9 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
           },
         ),
       );
+    } else if (state is CaseDeletorRunInProgress) {
+      emit(const CaseInitial());
+      _contextReader<DeletorBloc>().add(const DeletorConfirmed());
     }
   }
 
@@ -142,6 +146,9 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
       emit(const CaseInitial());
       _contextReader<RecordSelectorBloc>()
           .add(const RecordSelectorSelectingCanceled());
+    } else if (state is CaseDeletorRunInProgress) {
+      emit(const CaseInitial());
+      _contextReader<DeletorBloc>().add(const DeletorCanceled());
     }
   }
 
@@ -176,8 +183,9 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
           _contextReader<PlayerBloc>().add(PlayerStarted(event.path));
         case RecordSelectingInitiatorType.deletor:
 
-        /// deleting record
-        // TODO: Handle this case.
+          /// deleting record
+          emit(const CaseDeletorRunInProgress());
+          _contextReader<DeletorBloc>().add(DeletorStarted(event.path));
       }
     }
   }

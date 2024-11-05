@@ -21,6 +21,10 @@ final class CasePlayerRunInProgress extends CaseState {
   const CasePlayerRunInProgress();
 }
 
+final class CaseDeletorRunInProgress extends CaseState {
+  const CaseDeletorRunInProgress();
+}
+
 final class CaseRecordSelectorRunInProgress extends CaseState {
   const CaseRecordSelectorRunInProgress(this.type);
 
