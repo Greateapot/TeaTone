@@ -47,11 +47,11 @@ class _RecordSelectorProcessingViewState
         ),
         Expanded(
           child: BlocConsumer<RecordSelectorBloc, RecordSelectorState>(
-            listener: (context, state) {
+            listener: (context, state) async {
               /// May accidentally intercept the [RecordSelectorInitial] state
               if (state is! RecordSelectorProcessing) return;
 
-              _scrollController.position.animateTo(
+              await _scrollController.position.animateTo(
                 (_scrollController.position.viewportDimension +
                         _scrollController.position.maxScrollExtent) *
                     (state.selectedIndex - 2) /

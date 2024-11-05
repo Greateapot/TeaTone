@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:teatone/case/widgets/case_button.dart';
+part of 'widgets.dart';
 
 class CaseButtonsRow extends StatelessWidget {
   const CaseButtonsRow({

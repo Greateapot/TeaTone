@@ -10,7 +10,8 @@ Future<void> main() async {
     size: Size(360, 560),
     center: true,
     title: TeaToneApp.title,
-    windowButtonVisibility: true,
+    titleBarStyle: TitleBarStyle.hidden,
+    windowButtonVisibility: false,
     skipTaskbar: false,
   );
 

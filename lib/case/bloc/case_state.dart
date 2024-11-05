@@ -13,6 +13,14 @@ final class CaseInitial extends CaseState {
   const CaseInitial();
 }
 
+final class CaseCanceled extends CaseState {
+  const CaseCanceled();
+}
+
+final class CaseDone extends CaseState {
+  const CaseDone();
+}
+
 final class CaseRecorderRunInProgress extends CaseState {
   const CaseRecorderRunInProgress();
 }

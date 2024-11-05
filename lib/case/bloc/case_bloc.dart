@@ -31,6 +31,7 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
   }
 
   /// Обратная сторона лютого костыля
+  /// (на проде должен быть модификатор [final])
   late ContextReader _contextReader;
   set contextReader(ContextReader value) => _contextReader = value;
 
