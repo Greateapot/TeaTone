@@ -17,9 +17,9 @@ final class PlayerPaused extends PlayerEvent {
   const PlayerPaused();
 }
 
-final class PlayerResumed extends PlayerEvent {
-  const PlayerResumed();
-}
+// final class PlayerResumed extends PlayerEvent {
+//   const PlayerResumed();
+// }
 
 final class PlayerStopped extends PlayerEvent {
   const PlayerStopped();

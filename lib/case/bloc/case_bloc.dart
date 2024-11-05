@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:teatone/player/player.dart';
+import 'package:teatone/record_selector/record_selector.dart';
 import 'package:teatone/recorder/recorder.dart';
 
 part 'case_event.dart';
@@ -24,7 +25,7 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     on<CaseDeleteButtonPressed>(_onDeleteButtonPressed);
     on<CaseSettingsButtonPressed>(_onSettingsButtonPressed);
 
-    /// Special
+    /// Special (two-phased events)
     on<CaseRecordSelected>(_onRecordSelected);
   }
 
@@ -49,20 +50,10 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
   ) {
     if (state is CaseRecorderRunInProgress) {
       /// recorder paused
-      emit(const CaseRecorderRunPause());
       _contextReader<RecorderBloc>().add(const RecorderPaused());
-    } else if (state is CaseRecorderRunPause) {
-      /// recorder resumed
-      emit(const CaseRecorderRunInProgress());
-      _contextReader<RecorderBloc>().add(const RecorderResumed());
     } else if (state is CasePlayerRunInProgress) {
       /// player paused
-      emit(const CasePlayerRunPause());
       _contextReader<PlayerBloc>().add(const PlayerPaused());
-    } else if (state is CasePlayerRunPause) {
-      /// player resumed
-      emit(const CasePlayerRunInProgress());
-      _contextReader<PlayerBloc>().add(const PlayerResumed());
     }
   }
 
@@ -72,15 +63,10 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
   ) {
     if (state is CaseInitial) {
       /// select record for player
-      // TODO: add event to record selector bloc
-    } else if (state is CaseRecorderRunPause) {
-      /// recorder resumed
-      emit(const CaseRecorderRunInProgress());
-      _contextReader<RecorderBloc>().add(const RecorderResumed());
-    } else if (state is CasePlayerRunPause) {
-      /// player resumed
-      emit(const CasePlayerRunInProgress());
-      _contextReader<PlayerBloc>().add(const PlayerResumed());
+      emit(const CaseRecordSelectorRunInProgress(
+        RecordSelectingInitiatorType.player,
+      ));
+      _contextReader<RecordSelectorBloc>().add(const RecordSelectorStarted());
     }
   }
 
@@ -88,12 +74,11 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseStopButtonPressed event,
     Emitter<CaseState> emit,
   ) {
-    if (state is CaseRecorderRunInProgress || state is CaseRecorderRunPause) {
+    if (state is CaseRecorderRunInProgress) {
       /// recorder stopped
       emit(const CaseInitial());
       _contextReader<RecorderBloc>().add(const RecorderStopped());
-    } else if (state is CasePlayerRunInProgress ||
-        state is CasePlayerRunPause) {
+    } else if (state is CasePlayerRunInProgress) {
       /// player stopped
       emit(const CaseInitial());
       _contextReader<PlayerBloc>().add(const PlayerStopped());
@@ -104,9 +89,10 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseUpButtonPressed event,
     Emitter<CaseState> emit,
   ) {
-    if (state is CasePlayerRecordSelecting ||
-        state is CaseDeletingRecordSelecting) {
-      // TODO: add event to record selector bloc
+    if (state is CaseRecordSelectorRunInProgress) {
+      /// select previous record
+      _contextReader<RecordSelectorBloc>()
+          .add(const RecordSelectorPreviousSelected());
     }
   }
 
@@ -114,9 +100,10 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseDownButtonPressed event,
     Emitter<CaseState> emit,
   ) {
-    if (state is CasePlayerRecordSelecting ||
-        state is CaseDeletingRecordSelecting) {
-      // TODO: add event to record selector bloc
+    if (state is CaseRecordSelectorRunInProgress) {
+      /// select next record
+      _contextReader<RecordSelectorBloc>()
+          .add(const RecordSelectorNextSelected());
     }
   }
 
@@ -133,20 +120,41 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
   void _onConfirmButtonPressed(
     CaseConfirmButtonPressed event,
     Emitter<CaseState> emit,
-  ) {}
+  ) {
+    if (state is CaseRecordSelectorRunInProgress) {
+      /// complete record selection
+      _contextReader<RecordSelectorBloc>().add(
+        RecordSelectorSelectingCompleted(
+          (record) {
+            add(CaseRecordSelected(record));
+          },
+        ),
+      );
+    }
+  }
 
   void _onCancelButtonPressed(
     CaseCancelButtonPressed event,
     Emitter<CaseState> emit,
-  ) {}
+  ) {
+    if (state is CaseRecordSelectorRunInProgress) {
+      /// cancel record selection
+      emit(const CaseInitial());
+      _contextReader<RecordSelectorBloc>()
+          .add(const RecordSelectorSelectingCanceled());
+    }
+  }
 
   void _onDeleteButtonPressed(
     CaseDeleteButtonPressed event,
     Emitter<CaseState> emit,
   ) {
     if (state is CaseInitial) {
-      /// select record for deleting
-      // TODO: add event to record selector bloc
+      /// select record for player
+      emit(const CaseRecordSelectorRunInProgress(
+        RecordSelectingInitiatorType.deletor,
+      ));
+      _contextReader<RecordSelectorBloc>().add(const RecordSelectorStarted());
     }
   }
 
@@ -159,13 +167,18 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseRecordSelected event,
     Emitter<CaseState> emit,
   ) {
-    if (state is CasePlayerRecordSelecting) {
-      /// player started
-      emit(const CasePlayerRunInProgress());
-      _contextReader<PlayerBloc>().add(PlayerStarted(event.path));
-    } else if (state is CaseDeletingRecordSelecting) {
-      /// deleting record
-      // TODO: delete record
+    if (state is CaseRecordSelectorRunInProgress) {
+      switch ((state as CaseRecordSelectorRunInProgress).type) {
+        case RecordSelectingInitiatorType.player:
+
+          /// player started
+          emit(const CasePlayerRunInProgress());
+          _contextReader<PlayerBloc>().add(PlayerStarted(event.path));
+        case RecordSelectingInitiatorType.deletor:
+
+        /// deleting record
+        // TODO: Handle this case.
+      }
     }
   }
 }

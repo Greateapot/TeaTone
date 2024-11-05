@@ -60,16 +60,16 @@ class CaseView extends StatelessWidget {
                     width: 3.0,
                   ),
                 ),
-                child: BlocBuilder<CaseBloc, CaseState>(
-                  builder: (context, state) => switch (state) {
-                    CaseInitial() => const HomeView(),
-                    CaseRecorderRunInProgress() => const RecorderView(),
-                    CaseRecorderRunPause() => const RecorderView(),
-                    CasePlayerRunInProgress() => const PlayerView(),
-                    CasePlayerRunPause() => const PlayerView(),
-                    CasePlayerRecordSelecting() => const RecordSelectorView(),
-                    CaseDeletingRecordSelecting() => const RecordSelectorView(),
-                  },
+                child: SizedBox.expand(
+                  child: BlocBuilder<CaseBloc, CaseState>(
+                    builder: (context, state) => switch (state) {
+                      CaseInitial() => const HomeView(),
+                      CaseRecorderRunInProgress() => const RecorderView(),
+                      CasePlayerRunInProgress() => const PlayerView(),
+                      CaseRecordSelectorRunInProgress() =>
+                        const RecordSelectorView(),
+                    },
+                  ),
                 ),
               ),
             ),

@@ -13,7 +13,7 @@ class RecorderView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RecorderBloc, RecorderState>(
       builder: (context, state) => switch (state) {
-        RecorderInitial() => const SizedBox.expand(),
+        RecorderInitial() => const LoadingView(),
         RecorderRunInProgress() => RecorderInProgressView(state.duration),
         RecorderRunPause() => RecorderPausedView(state.duration),
       },

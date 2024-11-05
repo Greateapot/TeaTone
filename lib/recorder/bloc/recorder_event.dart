@@ -15,9 +15,9 @@ final class RecorderPaused extends RecorderEvent {
   const RecorderPaused();
 }
 
-final class RecorderResumed extends RecorderEvent {
-  const RecorderResumed();
-}
+// final class RecorderResumed extends RecorderEvent {
+//   const RecorderResumed();
+// }
 
 final class RecorderStopped extends RecorderEvent {
   const RecorderStopped();

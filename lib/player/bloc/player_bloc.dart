@@ -15,7 +15,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     on<PlayerStarted>(_onStarted);
     on<PlayerPaused>(_onPaused);
-    on<PlayerResumed>(_onResumed);
+    // on<PlayerResumed>(_onResumed);
     on<PlayerStopped>(_onStopped);
 
     on<_PlayerPositionChanged>(_onPositionChanged);
@@ -65,14 +65,23 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     Emitter<PlayerState> emit,
   ) async {
     try {
-      if (state is! PlayerRunInProgress) return;
+      if (state is PlayerRunInProgress) {
+        /// player paused
+        await _audioPlayer.pause();
 
-      await _audioPlayer.pause();
+        emit(PlayerRunPause(
+          duration: state.duration,
+          position: state.position,
+        ));
+      } else if (state is PlayerRunPause) {
+        /// player resumed
+        await _audioPlayer.resume();
 
-      emit(PlayerRunPause(
-        duration: state.duration,
-        position: state.position,
-      ));
+        emit(PlayerRunInProgress(
+          duration: state.duration,
+          position: state.position,
+        ));
+      }
     } catch (error, stackTrace) {
       _log(
         "Encountered an error in PlayerBloc._onPaused",
@@ -82,27 +91,27 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     }
   }
 
-  void _onResumed(
-    PlayerResumed event,
-    Emitter<PlayerState> emit,
-  ) async {
-    try {
-      if (state is! PlayerRunPause) return;
+  // void _onResumed(
+  //   PlayerResumed event,
+  //   Emitter<PlayerState> emit,
+  // ) async {
+  //   try {
+  //     if (state is! PlayerRunPause) return;
 
-      await _audioPlayer.resume();
+  //     await _audioPlayer.resume();
 
-      emit(PlayerRunInProgress(
-        duration: state.duration,
-        position: state.position,
-      ));
-    } catch (error, stackTrace) {
-      _log(
-        "Encountered an error in PlayerBloc._onResumed",
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-  }
+  //     emit(PlayerRunInProgress(
+  //       duration: state.duration,
+  //       position: state.position,
+  //     ));
+  //   } catch (error, stackTrace) {
+  //     _log(
+  //       "Encountered an error in PlayerBloc._onResumed",
+  //       error: error,
+  //       stackTrace: stackTrace,
+  //     );
+  //   }
+  // }
 
   void _onStopped(
     PlayerStopped event,
@@ -140,13 +149,11 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         ));
       }
     } catch (error, stackTrace) {
-      if (kDebugMode) {
-        dev.log(
-          "Encountered an error in RecorderBloc._onPositionChanged",
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
+      _log(
+        "Encountered an error in PlayerBloc._onPositionChanged",
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -167,13 +174,11 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         ));
       }
     } catch (error, stackTrace) {
-      if (kDebugMode) {
-        dev.log(
-          "Encountered an error in RecorderBloc._onPositionChanged",
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
+      _log(
+        "Encountered an error in PlayerBloc._onDurationChanged",
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 
