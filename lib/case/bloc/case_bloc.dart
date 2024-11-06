@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:teatone/battery_level_sensor/battery_level_sensor.dart';
 import 'package:teatone/deletor/deletor.dart';
 import 'package:teatone/player/player.dart';
 import 'package:teatone/record_selector/record_selector.dart';
@@ -13,6 +14,7 @@ typedef ContextReader = T Function<T>();
 class CaseBloc extends Bloc<CaseEvent, CaseState> {
   CaseBloc() : super(const CaseInitial()) {
     /// on Key Press
+    on<CaseRecordButtonLongPress>(_onRecordButtonLongPress);
     on<CaseRecordButtonPressed>(_onRecordButtonPressed);
     on<CasePauseButtonPressed>(_onPauseButtonPressed);
     on<CasePlayButtonPressed>(_onPlayButtonPressed);
@@ -31,14 +33,27 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
   }
 
   /// Обратная сторона лютого костыля
-  /// (на проде должен быть модификатор [final])
   late ContextReader _contextReader;
   set contextReader(ContextReader value) => _contextReader = value;
+
+  /// Так все еще делать нельзя, но делать еще один блок для экрана мне лень
+  bool get isDisplayOff =>
+      _contextReader<BatteryLevelSensorBloc>().state.isDisplayOff;
+
+  void _onRecordButtonLongPress(
+    CaseRecordButtonLongPress event,
+    Emitter<CaseState> emit,
+  ) {
+    _contextReader<BatteryLevelSensorBloc>()
+        .add(const BatteryLevelSensorDisplayStateChanged());
+  }
 
   void _onRecordButtonPressed(
     CaseRecordButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseInitial) {
       /// recorder started
       emit(const CaseRecorderRunInProgress());
@@ -50,6 +65,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CasePauseButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseRecorderRunInProgress) {
       /// recorder paused
       _contextReader<RecorderBloc>().add(const RecorderPaused());
@@ -63,6 +80,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CasePlayButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseInitial) {
       /// select record for player
       emit(const CaseRecordSelectorRunInProgress(
@@ -76,6 +95,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseStopButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseRecorderRunInProgress) {
       /// recorder stopped
       emit(const CaseInitial());
@@ -91,6 +112,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseUpButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseRecordSelectorRunInProgress) {
       /// select previous record
       _contextReader<RecordSelectorBloc>()
@@ -102,6 +125,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseDownButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseRecordSelectorRunInProgress) {
       /// select next record
       _contextReader<RecordSelectorBloc>()
@@ -123,6 +148,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseConfirmButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseRecordSelectorRunInProgress) {
       /// complete record selection
       _contextReader<RecordSelectorBloc>().add(
@@ -142,6 +169,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseCancelButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseRecordSelectorRunInProgress) {
       /// cancel record selection
       emit(const CaseInitial());
@@ -157,6 +186,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CaseDeleteButtonPressed event,
     Emitter<CaseState> emit,
   ) {
+    if (isDisplayOff) return;
+
     if (state is CaseInitial) {
       /// select record for player
       emit(const CaseRecordSelectorRunInProgress(

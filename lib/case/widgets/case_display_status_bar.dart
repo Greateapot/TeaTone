@@ -8,7 +8,6 @@ class CaseDisplayStatusBar extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
-    // TODO: StatusBar widget (BatteryBloc listener)
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -18,8 +17,7 @@ class CaseDisplayStatusBar extends StatelessWidget {
             color: colorScheme.primary,
           ),
         ),
-        Text(
-          '?%',
+        BatteryLevelPercentage(
           style: textTheme.bodyMedium?.copyWith(
             color: colorScheme.primary,
           ),

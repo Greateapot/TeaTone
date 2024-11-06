@@ -72,13 +72,11 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
         emit(RecorderRunInProgress(duration: state.duration));
       }
     } catch (error, stackTrace) {
-      if (kDebugMode) {
-        dev.log(
-          "Encountered an error in RecorderBloc._onPaused",
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
+      _log(
+        "Encountered an error in RecorderBloc._onPaused",
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -95,13 +93,11 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
 
   //     emit(RecorderRunInProgress(duration: state.duration));
   //   } catch (error, stackTrace) {
-  //     if (kDebugMode) {
-  //       dev.log(
+  //       _log(
   //         "Encountered an error in RecorderBloc._onResumed",
   //         error: error,
   //         stackTrace: stackTrace,
   //       );
-  //     }
   //   }
   // }
 
@@ -117,13 +113,11 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
 
       emit(const RecorderInitial());
     } catch (error, stackTrace) {
-      if (kDebugMode) {
-        dev.log(
-          "Encountered an error in RecorderBloc._onStopped",
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
+      _log(
+        "Encountered an error in RecorderBloc._onStopped",
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -136,13 +130,11 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
 
       emit(RecorderRunInProgress(duration: state.duration + 1));
     } catch (error, stackTrace) {
-      if (kDebugMode) {
-        dev.log(
-          "Encountered an error in RecorderBloc._onTicked",
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
+      _log(
+        "Encountered an error in RecorderBloc._onTicked",
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 

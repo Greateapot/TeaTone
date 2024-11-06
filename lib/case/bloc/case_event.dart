@@ -7,6 +7,10 @@ sealed class CaseEvent extends Equatable {
   List<Object> get props => [];
 }
 
+final class CaseRecordButtonLongPress extends CaseEvent {
+  const CaseRecordButtonLongPress();
+}
+
 final class CaseRecordButtonPressed extends CaseEvent {
   const CaseRecordButtonPressed();
 }

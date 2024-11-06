@@ -57,6 +57,9 @@ class CaseButtonPanel extends StatelessWidget {
             CaseButtonData(
               onPressed: () =>
                   context.read<CaseBloc>().add(const CaseRecordButtonPressed()),
+              onLongPress: () => context
+                  .read<CaseBloc>()
+                  .add(const CaseRecordButtonLongPress()),
               icon: Icons.mic_outlined,
             ),
             CaseButtonData(
