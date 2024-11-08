@@ -30,3 +30,7 @@ class TeaToneApp extends StatelessWidget {
     return seedColor;
   }
 }
+
+/// TODO: Problems
+/// 1. Display state -> BLS logic
+/// 2. Case with build context
