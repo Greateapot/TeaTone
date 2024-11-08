@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:teatone/src/widgets/widgets.dart';
 
 class RecorderPausedView extends StatelessWidget {
-  const RecorderPausedView(this.duration, {super.key});
+  const RecorderPausedView({
+    required this.duration,
+    super.key,
+  });
 
   final int duration;
 

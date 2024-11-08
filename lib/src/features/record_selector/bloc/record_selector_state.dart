@@ -24,7 +24,7 @@ final class RecordSelectorProcessing extends RecordSelectorState {
     required this.selectedIndex,
   });
 
-  final List<dynamic> records;
+  final List<Record> records;
   final int selectedIndex;
 
   RecordSelectorProcessing copyWith(int selectedIndex) =>

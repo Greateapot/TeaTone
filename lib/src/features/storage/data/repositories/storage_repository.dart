@@ -15,8 +15,9 @@ class StorageRepository {
       : _internalStorageDataProvider = const InternalStorageDataProvider(),
         _externalStorageDataProvider = const ExternalStorageDataProvider();
 
-  Future<bool> deleteRecord(StorageType type, Record record) async {
-    final result = await _getStorageDatasourceByType(type).delete(record.title);
+  Future<bool> deleteRecord(Record record) async {
+    final result =
+        await _getStorageDatasourceByType(record.type).delete(record.title);
 
     // only extmem may be unavailable
     if (result == null) throw const StorageIsUnavailableException();
@@ -76,6 +77,7 @@ class StorageRepository {
           title: title,
           path: entity.path,
           createdAt: stat.changed,
+          type: type,
         ));
       }
     }

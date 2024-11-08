@@ -9,7 +9,9 @@ sealed class RecordSelectorEvent extends Equatable {
 
 final class RecordSelectorStarted extends RecordSelectorEvent {
   /// on play/delete pressed (two-phased events)
-  const RecordSelectorStarted();
+  const RecordSelectorStarted(this.storageType);
+
+  final StorageType storageType;
 }
 
 final class RecordSelectorPreviousSelected extends RecordSelectorEvent {
@@ -32,5 +34,5 @@ final class RecordSelectorSelectingCompleted extends RecordSelectorEvent {
   const RecordSelectorSelectingCompleted([this.callback]);
 
   /// called with selected record
-  final void Function(dynamic)? callback;
+  final void Function(Record)? callback;
 }

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:teatone/src/widgets/widgets.dart';
 
 class RecorderInProgressView extends StatelessWidget {
-  const RecorderInProgressView(this.duration, {super.key});
+  const RecorderInProgressView({
+    required this.duration,
+    super.key,
+  });
 
   final int duration;
 

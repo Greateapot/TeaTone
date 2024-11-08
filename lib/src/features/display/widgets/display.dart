@@ -34,7 +34,7 @@ class Display extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(
@@ -62,5 +62,6 @@ class Display extends StatelessWidget {
         DisplayPlayer() => const PlayerView(),
         DisplayDeletor() => const DeletorView(),
         DisplayRecordSelector() => const RecordSelectorView(),
+        DisplayFailed() => const FailedView(),
       };
 }

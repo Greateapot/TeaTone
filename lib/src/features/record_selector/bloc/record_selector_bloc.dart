@@ -24,12 +24,12 @@ class RecordSelectorBloc
   void _onStarted(
     RecordSelectorStarted event,
     Emitter<RecordSelectorState> emit,
-  ) {
+  ) async {
     try {
       if (state is! RecordSelectorInitial) return;
 
-      /// get it from storage
-      final List<dynamic> records = [];
+      final List<Record> records =
+          await storageRepository.getRecords(event.storageType);
 
       if (records.isEmpty) {
         emit(const RecordSelectorStorageIsEmpty());

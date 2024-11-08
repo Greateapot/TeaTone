@@ -8,9 +8,10 @@ sealed class PlayerEvent extends Equatable {
 }
 
 final class PlayerStarted extends PlayerEvent {
-  const PlayerStarted(this.path);
+  const PlayerStarted(this.record, [this.onStopped]);
 
-  final String path;
+  final Record record;
+  final void Function()? onStopped;
 }
 
 final class PlayerPaused extends PlayerEvent {
@@ -22,7 +23,17 @@ final class PlayerPaused extends PlayerEvent {
 // }
 
 final class PlayerStopped extends PlayerEvent {
-  const PlayerStopped();
+  const PlayerStopped([this.onStopped]);
+
+  final void Function()? onStopped;
+}
+
+final class PlayerNextPosition extends PlayerEvent {
+  const PlayerNextPosition();
+}
+
+final class PlayerPreviousPosition extends PlayerEvent {
+  const PlayerPreviousPosition();
 }
 
 final class _PlayerPositionChanged extends PlayerEvent {
@@ -31,8 +42,8 @@ final class _PlayerPositionChanged extends PlayerEvent {
   final Duration position;
 }
 
-final class _PlayerDurationChanged extends PlayerEvent {
-  const _PlayerDurationChanged(this.duration);
+// final class _PlayerDurationChanged extends PlayerEvent {
+//   const _PlayerDurationChanged(this.duration);
 
-  final Duration duration;
-}
+//   final Duration duration;
+// }

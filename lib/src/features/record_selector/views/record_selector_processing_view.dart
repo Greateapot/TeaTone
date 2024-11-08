@@ -84,7 +84,7 @@ class _RecordSelectorProcessingViewState
 
                     return ListTile(
                       title: Text(
-                        record,
+                        record.title,
                         style: textTheme.titleLarge?.copyWith(
                           color: colorScheme.primary,
                         ),

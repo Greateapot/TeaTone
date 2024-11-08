@@ -12,8 +12,14 @@ class PlayerView extends StatelessWidget {
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, state) => switch (state) {
         PlayerInitial() => const LoadingView(),
-        PlayerRunInProgress() => const PlayerRunInProgressView(),
-        PlayerRunPause() => const PlayerRunPauseView(),
+        PlayerRunInProgress() => PlayerRunInProgressView(
+            duration: state.duration,
+            position: state.position,
+          ),
+        PlayerRunPause() => PlayerRunPauseView(
+            duration: state.duration,
+            position: state.position,
+          ),
       },
     );
   }

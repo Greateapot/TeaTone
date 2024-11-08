@@ -9,6 +9,7 @@ class DisplayBloc extends Bloc<DisplayEvent, DisplayState> {
       : super(const DisplayHome(isDisplayOff: false)) {
     on<DisplayStateChanged>(_onStateChanged);
     on<DisplayHomeDisplayed>(_onHomeDisplayed);
+    on<DisplayFailedDisplayed>(_onFailedDisplayed);
     on<DisplayCanceledDisplayed>(_onCanceledDisplayed);
     on<DisplayDoneDisplayed>(_onDoneDisplayed);
     on<DisplayRecorderDisplayed>(_onRecorderDisplayed);
@@ -31,6 +32,18 @@ class DisplayBloc extends Bloc<DisplayEvent, DisplayState> {
     Emitter<DisplayState> emit,
   ) async {
     emit(DisplayHome(isDisplayOff: state.isDisplayOff));
+  }
+
+  void _onFailedDisplayed(
+    DisplayFailedDisplayed event,
+    Emitter<DisplayState> emit,
+  ) async {
+    emit(DisplayFailed(isDisplayOff: state.isDisplayOff));
+
+    await Future.delayed(
+      noticeDelay,
+      () => emit(DisplayHome(isDisplayOff: state.isDisplayOff)),
+    );
   }
 
   void _onCanceledDisplayed(

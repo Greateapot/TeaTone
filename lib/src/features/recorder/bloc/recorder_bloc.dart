@@ -4,8 +4,6 @@ import 'dart:developer' as dev;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart' as pathlib;
-import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:teatone/src/features/storage/storage.dart';
 
@@ -41,7 +39,7 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
       if (!await _audioRecorder.hasPermission()) return;
       if (!await _isEncoderSupported(encoder)) return;
 
-      final path = await _getPath();
+      final path = await storageRepository.getNewRecordName(event.storageType);
 
       await _audioRecorder.start(config, path: path);
       await _startTimer();
@@ -166,15 +164,6 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
     }
 
     return isSupported;
-  }
-
-  Future<String> _getPath() async {
-    final dir = await getApplicationDocumentsDirectory();
-
-    return pathlib.join(
-      dir.path,
-      'teatone_${DateTime.now().millisecondsSinceEpoch}.m4a',
-    );
   }
 
   Future<void> _startTimer() async {

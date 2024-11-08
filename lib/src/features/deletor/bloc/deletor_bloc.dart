@@ -24,7 +24,7 @@ class DeletorBloc extends Bloc<DeletorEvent, DeletorState> {
     try {
       if (state is! DeletorInitial) return;
 
-      emit(DeletorProcessing(event.path));
+      emit(DeletorProcessing(event.record));
     } catch (error, stackTrace) {
       _log(
         "Encountered an error in DeletorBloc._onStarted",
@@ -37,11 +37,15 @@ class DeletorBloc extends Bloc<DeletorEvent, DeletorState> {
   void _onConfirmed(
     DeletorConfirmed event,
     Emitter<DeletorState> emit,
-  ) {
+  ) async {
     try {
-      if (state is! DeletorProcessing) return;
+      final currentState = state;
+      if (currentState is! DeletorProcessing) return;
 
-      // TODO: delete record from storage (through storage repository)
+      final result = await storageRepository.deleteRecord(currentState.record);
+
+      if (event.onSuccess != null && result) event.onSuccess!();
+      if (event.onFailure != null && !result) event.onFailure!();
 
       emit(const DeletorInitial());
     } catch (error, stackTrace) {

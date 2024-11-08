@@ -12,8 +12,9 @@ class RecorderView extends StatelessWidget {
     return BlocBuilder<RecorderBloc, RecorderState>(
       builder: (context, state) => switch (state) {
         RecorderInitial() => const LoadingView(),
-        RecorderRunInProgress() => RecorderInProgressView(state.duration),
-        RecorderRunPause() => RecorderPausedView(state.duration),
+        RecorderRunInProgress() =>
+          RecorderInProgressView(duration: state.duration),
+        RecorderRunPause() => RecorderPausedView(duration: state.duration),
       },
     );
   }

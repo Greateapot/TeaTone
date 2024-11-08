@@ -15,6 +15,10 @@ final class DisplayHomeDisplayed extends DisplayEvent {
   const DisplayHomeDisplayed();
 }
 
+final class DisplayFailedDisplayed extends DisplayEvent {
+  const DisplayFailedDisplayed();
+}
+
 final class DisplayCanceledDisplayed extends DisplayEvent {
   const DisplayCanceledDisplayed();
 }

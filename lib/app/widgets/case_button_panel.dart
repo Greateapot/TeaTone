@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatone/src/features/battery_level_sensor/battery_level_sensor.dart';
 import 'package:teatone/src/features/deletor/deletor.dart';
 import 'package:teatone/src/features/display/display.dart';
+import 'package:teatone/src/features/parameters/parameters.dart';
 import 'package:teatone/src/features/player/player.dart';
 import 'package:teatone/src/features/record_selector/record_selector.dart';
 import 'package:teatone/src/features/recorder/recorder.dart';
+import 'package:teatone/src/features/storage/storage.dart';
 
 import 'case_button.dart';
 import 'case_buttons_row.dart';
@@ -20,9 +22,10 @@ class CaseButtonPanel extends StatelessWidget {
 
     switch (displayState) {
       case DisplayDeletor():
-        // TODO: 2 callbacks for deletor on Success and Failure
-        context.read<DisplayBloc>().add(const DisplayDoneDisplayed());
-        context.read<DeletorBloc>().add(const DeletorConfirmed());
+        context.read<DeletorBloc>().add(DeletorConfirmed(
+              onSuccess: () => _onDeletorSuccess(context),
+              onFailure: () => _onDeletorFailure(context),
+            ));
         break;
       case DisplayRecordSelector():
         context.read<RecordSelectorBloc>().add(RecordSelectorSelectingCompleted(
@@ -85,8 +88,31 @@ class CaseButtonPanel extends StatelessWidget {
     }
   }
 
-  void _onLeftPressed(BuildContext context) {}
-  void _onRightPressed(BuildContext context) {}
+  void _onLeftPressed(BuildContext context) {
+    final displayState = context.read<DisplayBloc>().state;
+
+    if (displayState.isDisplayOff) return;
+
+    switch (displayState) {
+      case DisplayPlayer():
+        context.read<PlayerBloc>().add(const PlayerPreviousPosition());
+        break;
+      default: // skip
+    }
+  }
+
+  void _onRightPressed(BuildContext context) {
+    final displayState = context.read<DisplayBloc>().state;
+
+    if (displayState.isDisplayOff) return;
+
+    switch (displayState) {
+      case DisplayPlayer():
+        context.read<PlayerBloc>().add(const PlayerNextPosition());
+        break;
+      default: // skip
+    }
+  }
 
   void _onRecordPressed(BuildContext context) {
     final displayState = context.read<DisplayBloc>().state;
@@ -95,8 +121,13 @@ class CaseButtonPanel extends StatelessWidget {
 
     switch (displayState) {
       case DisplayHome():
+        final parameters = context.read<ParametersBloc>().state.parameters ??
+            Parameters.defaults();
+
         context.read<DisplayBloc>().add(const DisplayRecorderDisplayed());
-        context.read<RecorderBloc>().add(const RecorderStarted());
+        context
+            .read<RecorderBloc>()
+            .add(RecorderStarted(parameters.storageType));
         break;
       default: // skip
     }
@@ -109,9 +140,14 @@ class CaseButtonPanel extends StatelessWidget {
 
     switch (displayState) {
       case DisplayHome():
+        final parameters = context.read<ParametersBloc>().state.parameters ??
+            Parameters.defaults();
+
         context.read<DisplayBloc>().add(const DisplayRecordSelectorDisplayed(
             RecordSelectingInitiatorType.player));
-        context.read<RecordSelectorBloc>().add(const RecordSelectorStarted());
+        context
+            .read<RecordSelectorBloc>()
+            .add(RecordSelectorStarted(parameters.storageType));
         break;
       default: // skip
     }
@@ -158,9 +194,14 @@ class CaseButtonPanel extends StatelessWidget {
 
     switch (displayState) {
       case DisplayHome():
+        final parameters = context.read<ParametersBloc>().state.parameters ??
+            Parameters.defaults();
+
         context.read<DisplayBloc>().add(const DisplayRecordSelectorDisplayed(
             RecordSelectingInitiatorType.deletor));
-        context.read<RecordSelectorBloc>().add(const RecordSelectorStarted());
+        context
+            .read<RecordSelectorBloc>()
+            .add(RecordSelectorStarted(parameters.storageType));
         break;
       default: // skip
     }
@@ -177,12 +218,26 @@ class CaseButtonPanel extends StatelessWidget {
 
   void _onPlayerRecordSelected(BuildContext context, dynamic record) {
     context.read<DisplayBloc>().add(const DisplayPlayerDisplayed());
-    context.read<PlayerBloc>().add(PlayerStarted(record));
+    context
+        .read<PlayerBloc>()
+        .add(PlayerStarted(record, () => _onPlayerStopped(context)));
   }
 
   void _onDeletorRecordSelected(BuildContext context, dynamic record) {
     context.read<DisplayBloc>().add(const DisplayDeletorDisplayed());
     context.read<DeletorBloc>().add(DeletorStarted(record));
+  }
+
+  void _onDeletorSuccess(BuildContext context) {
+    context.read<DisplayBloc>().add(const DisplayDoneDisplayed());
+  }
+
+  void _onDeletorFailure(BuildContext context) {
+    context.read<DisplayBloc>().add(const DisplayFailedDisplayed());
+  }
+
+  void _onPlayerStopped(BuildContext context) {
+    context.read<DisplayBloc>().add(const DisplayHomeDisplayed());
   }
 
   @override

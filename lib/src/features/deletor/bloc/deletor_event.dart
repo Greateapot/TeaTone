@@ -8,13 +8,16 @@ sealed class DeletorEvent extends Equatable {
 }
 
 final class DeletorStarted extends DeletorEvent {
-  const DeletorStarted(this.path);
+  const DeletorStarted(this.record);
 
-  final String path;
+  final Record record;
 }
 
 final class DeletorConfirmed extends DeletorEvent {
-  const DeletorConfirmed();
+  const DeletorConfirmed({this.onSuccess, this.onFailure});
+
+  final void Function()? onSuccess;
+  final void Function()? onFailure;
 }
 
 final class DeletorCanceled extends DeletorEvent {

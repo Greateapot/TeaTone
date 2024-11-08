@@ -6,3 +6,4 @@ export 'done_view.dart';
 export 'home_view.dart';
 export 'player_view.dart';
 export 'record_selector_view.dart';
+export 'failed_view.dart';

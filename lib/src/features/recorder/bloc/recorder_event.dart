@@ -4,11 +4,13 @@ sealed class RecorderEvent extends Equatable {
   const RecorderEvent();
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 final class RecorderStarted extends RecorderEvent {
-  const RecorderStarted();
+  const RecorderStarted(this.storageType);
+
+  final StorageType storageType;
 }
 
 final class RecorderPaused extends RecorderEvent {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatone/src/features/battery_level_sensor/battery_level_sensor.dart';
 import 'package:teatone/src/features/deletor/deletor.dart';
+import 'package:teatone/src/features/parameters/parameters.dart';
 import 'package:teatone/src/features/player/player.dart';
 import 'package:teatone/src/features/record_selector/record_selector.dart';
 import 'package:teatone/src/features/recorder/recorder.dart';
@@ -55,6 +56,11 @@ class AppView extends StatelessWidget {
         BlocProvider(
           lazy: false,
           create: (context) => DisplayBloc(),
+        ),
+        BlocProvider<ParametersBloc>(
+          lazy: false,
+          create: (context) =>
+              ParametersBloc(storageRepository)..add(const ParametersLoad()),
         ),
         BlocProvider<RecorderBloc>(
           create: (context) => RecorderBloc(storageRepository),

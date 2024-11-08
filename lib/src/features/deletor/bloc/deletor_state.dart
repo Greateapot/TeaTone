@@ -13,7 +13,7 @@ final class DeletorInitial extends DeletorState {
 }
 
 final class DeletorProcessing extends DeletorState {
-  const DeletorProcessing(this.path);
+  const DeletorProcessing(this.record);
 
-  final String path;
+  final Record record;
 }

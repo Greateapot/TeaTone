@@ -21,6 +21,14 @@ final class DisplayHome extends DisplayState {
       DisplayHome(isDisplayOff: isDisplayOff);
 }
 
+final class DisplayFailed extends DisplayState {
+  const DisplayFailed({required super.isDisplayOff});
+
+  @override
+  DisplayFailed copyWith({required bool isDisplayOff}) =>
+      DisplayFailed(isDisplayOff: isDisplayOff);
+}
+
 final class DisplayCanceled extends DisplayState {
   const DisplayCanceled({required super.isDisplayOff});
 
