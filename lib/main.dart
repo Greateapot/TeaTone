@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:teatone/app.dart';
+import 'package:teatone/app/app.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
@@ -9,7 +9,7 @@ Future<void> main() async {
   WindowOptions windowOptions = const WindowOptions(
     size: Size(360, 560),
     center: true,
-    title: TeaToneApp.title,
+    title: App.title,
     titleBarStyle: TitleBarStyle.hidden,
     windowButtonVisibility: false,
     skipTaskbar: false,
@@ -21,5 +21,5 @@ Future<void> main() async {
     await windowManager.focus();
   });
 
-  runApp(const TeaToneApp());
+  runApp(const App());
 }
