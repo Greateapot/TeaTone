@@ -20,7 +20,12 @@ import 'package:teatone/src/features/storage_type_selector/storage_type_selector
 class App extends StatelessWidget {
   static const String title = "TeaTone";
 
-  const App({super.key});
+  const App({
+    super.key,
+    required StorageRepository storageRepository,
+  }) : _storageRepository = storageRepository;
+
+  final StorageRepository _storageRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +36,42 @@ class App extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: RepositoryProvider(
-        create: (context) => const StorageRepository(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            lazy: false,
+            create: (context) => DisplayBloc(),
+          ),
+          BlocProvider<ParametersBloc>(
+            lazy: false,
+            create: (context) => ParametersBloc(_storageRepository),
+          ),
+          BlocProvider<BatteryLevelSensorBloc>(
+            lazy: false,
+            create: (context) => BatteryLevelSensorBloc(),
+          ),
+          BlocProvider<RecorderBloc>(
+            create: (context) => RecorderBloc(_storageRepository),
+          ),
+          BlocProvider<PlayerBloc>(
+            create: (context) => PlayerBloc(_storageRepository),
+          ),
+          BlocProvider<DeletorBloc>(
+            create: (context) => DeletorBloc(_storageRepository),
+          ),
+          BlocProvider<RecordSelectorBloc>(
+            create: (context) => RecordSelectorBloc(_storageRepository),
+          ),
+          BlocProvider<StorageTypeSelectorBloc>(
+            create: (context) => StorageTypeSelectorBloc(_storageRepository),
+          ),
+          BlocProvider<SortMethodSelectorBloc>(
+            create: (context) => SortMethodSelectorBloc(),
+          ),
+          BlocProvider<ParameterSelectorBloc>(
+            create: (context) => ParameterSelectorBloc(),
+          ),
+        ],
         child: const AppView(),
       ),
     );
@@ -51,61 +90,35 @@ class App extends StatelessWidget {
 class AppView extends StatelessWidget {
   const AppView({super.key});
 
+  void _onLowBatteryChargePercentage(BuildContext context) {
+    final displayBloc = context.read<DisplayBloc>();
+
+    if (!displayBloc.state.isDisplayOff) {
+      displayBloc.add(const DisplayStateChanged());
+      context
+          .read<BatteryLevelSensorBloc>()
+          .add(const BatteryLevelSensorDisplayStateChanged());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final StorageRepository storageRepository =
-        context.read<StorageRepository>();
+    context.read<ParametersBloc>().add(const ParametersLoaded());
+    context.read<BatteryLevelSensorBloc>().add(BatteryLevelSensorStarted(
+          () => _onLowBatteryChargePercentage(context),
+        ));
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          lazy: false,
-          create: (context) => DisplayBloc(),
-        ),
-        BlocProvider<ParametersBloc>(
-          lazy: false,
-          create: (context) =>
-              ParametersBloc(storageRepository)..add(const ParametersLoaded()),
-        ),
-        BlocProvider<BatteryLevelSensorBloc>(
-          lazy: false,
-          create: (context) =>
-              BatteryLevelSensorBloc()..add(const BatteryLevelSensorStarted()),
-        ),
-        BlocProvider<RecorderBloc>(
-          create: (context) => RecorderBloc(storageRepository),
-        ),
-        BlocProvider<PlayerBloc>(
-          create: (context) => PlayerBloc(storageRepository),
-        ),
-        BlocProvider<DeletorBloc>(
-          create: (context) => DeletorBloc(storageRepository),
-        ),
-        BlocProvider<RecordSelectorBloc>(
-          create: (context) => RecordSelectorBloc(storageRepository),
-        ),
-        BlocProvider<StorageTypeSelectorBloc>(
-          create: (context) => StorageTypeSelectorBloc(storageRepository),
-        ),
-        BlocProvider<SortMethodSelectorBloc>(
-          create: (context) => SortMethodSelectorBloc(),
-        ),
-        BlocProvider<ParameterSelectorBloc>(
-          create: (context) => ParameterSelectorBloc(),
-        ),
-      ],
-      child: const Scaffold(
-        body: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(24.0),
-                child: Display(),
-              ),
+    return const Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(24.0),
+              child: DisplayView(),
             ),
-            CaseButtonPanel(),
-          ],
-        ),
+          ),
+          CaseButtonPanel(),
+        ],
       ),
     );
   }

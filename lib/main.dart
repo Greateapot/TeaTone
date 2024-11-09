@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teatone/app/app.dart';
+import 'package:teatone/src/features/storage/storage.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
@@ -21,5 +22,7 @@ Future<void> main() async {
     await windowManager.focus();
   });
 
-  runApp(const App());
+  runApp(const App(
+    storageRepository: StorageRepository(),
+  ));
 }

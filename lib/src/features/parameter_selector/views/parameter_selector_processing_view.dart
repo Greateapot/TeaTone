@@ -45,8 +45,8 @@ class _ParameterSelectorProcessingViewState
         Divider(
           height: 16.0,
           thickness: 3.0,
-          indent: 40.0,
-          endIndent: 40.0,
+          indent: 10.0,
+          endIndent: 10.0,
           color: colorScheme.primary,
         ),
         Expanded(
@@ -80,11 +80,11 @@ class _ParameterSelectorProcessingViewState
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.parameters.length,
                   itemBuilder: (context, index) {
-                    final record = state.parameters[index];
+                    final parameter = state.parameters[index];
 
                     return ListTile(
                       title: Text(
-                        record.name,
+                        _parameterToString(parameter),
                         style: textTheme.titleLarge?.copyWith(
                           color: colorScheme.primary,
                         ),
@@ -105,4 +105,9 @@ class _ParameterSelectorProcessingViewState
       ],
     );
   }
+
+  String _parameterToString(Parameter parameter) => switch (parameter) {
+        Parameter.sortMethod => "Sort method",
+        Parameter.storageType => "Storage type",
+      };
 }

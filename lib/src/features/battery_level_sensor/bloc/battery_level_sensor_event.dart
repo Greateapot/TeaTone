@@ -8,7 +8,9 @@ sealed class BatteryLevelSensorEvent extends Equatable {
 }
 
 final class BatteryLevelSensorStarted extends BatteryLevelSensorEvent {
-  const BatteryLevelSensorStarted();
+  const BatteryLevelSensorStarted([this.onLowBatteryChargePercentage]);
+
+  final void Function()? onLowBatteryChargePercentage;
 }
 
 final class BatteryLevelSensorDisplayStateChanged

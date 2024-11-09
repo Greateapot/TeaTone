@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatone/src/features/display/display.dart';
 
-class Display extends StatelessWidget {
-  const Display({super.key});
+class DisplayView extends StatelessWidget {
+  const DisplayView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,16 +55,16 @@ class Display extends StatelessWidget {
 
   Widget _bodyBuilder(BuildContext context, DisplayState state) =>
       switch (state) {
-        DisplayHome() => const HomeView(),
-        DisplayCanceled() => const CanceledView(),
-        DisplayDone() => const DoneView(),
-        DisplayRecorder() => const RecorderView(),
-        DisplayPlayer() => const PlayerView(),
-        DisplayDeletor() => const DeletorView(),
-        DisplayRecordSelector() => const RecordSelectorView(),
-        DisplayFailed() => const FailedView(),
-        DisplayParameterSelector() => const ParameterSelectorView(),
-        DisplaySortMethodSelector() => const SortMethodSelectorView(),
-        DisplayStorageTypeSelector() => const StorageTypeSelectorView(),
+        DisplayHome() => const DisplayHomeView(),
+        DisplayCanceled() => const DisplayCanceledView(),
+        DisplayDone() => const DisplayDoneView(),
+        DisplayRecorder() => const DisplayRecorderView(),
+        DisplayPlayer() => const DisplayPlayerView(),
+        DisplayDeletor() => const DisplayDeletorView(),
+        DisplayRecordSelector() => const DisplayRecordSelectorView(),
+        DisplayFailed() => const DisplayFailedView(),
+        DisplayParameterSelector() => const DisplayParameterSelectorView(),
+        DisplaySortMethodSelector() => const DisplaySortMethodSelectorView(),
+        DisplayStorageTypeSelector() => const DisplayStorageTypeSelectorView(),
       };
 }

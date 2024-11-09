@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatone/src/features/sort_method_selector/sort_method_selector.dart';
+import 'package:teatone/src/features/storage/storage.dart';
 
 class SortMethodSelectorProcessingView extends StatefulWidget {
   const SortMethodSelectorProcessingView({super.key});
@@ -80,11 +81,11 @@ class _SortMethodSelectorProcessingViewState
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.sortMethods.length,
                   itemBuilder: (context, index) {
-                    final record = state.sortMethods[index];
+                    final sortMethod = state.sortMethods[index];
 
                     return ListTile(
                       title: Text(
-                        record.name,
+                        _sortMethodToString(sortMethod),
                         style: textTheme.titleLarge?.copyWith(
                           color: colorScheme.primary,
                         ),
@@ -110,4 +111,11 @@ class _SortMethodSelectorProcessingViewState
       ],
     );
   }
+
+  String _sortMethodToString(SortMethod sortMethod) => switch (sortMethod) {
+        SortMethod.az => 'A-Z',
+        SortMethod.za => 'Z-A',
+        SortMethod.dt => 'Creation date asc',
+        SortMethod.td => 'Creation date desc',
+      };
 }

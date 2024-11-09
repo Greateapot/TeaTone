@@ -12,8 +12,9 @@ part 'battery_level_sensor_state.dart';
 class BatteryLevelSensorBloc
     extends Bloc<BatteryLevelSensorEvent, BatteryLevelSensorState> {
   BatteryLevelSensorBloc() : super(const BatteryLevelSensorInitial()) {
+    batteryLevelSensorConfig = const BatteryLevelSensorConfig();
     _batteryLevelSensor = BatteryLevelSensor(
-      config: const BatteryLevelSensorConfig(),
+      config: batteryLevelSensorConfig,
     );
 
     on<BatteryLevelSensorStarted>(_onStarted);
@@ -21,9 +22,12 @@ class BatteryLevelSensorBloc
     on<_BatteryLevelSensorDischarging>(_onDischarging);
   }
 
+  late final BatteryLevelSensorConfig batteryLevelSensorConfig;
   late final BatteryLevelSensor _batteryLevelSensor;
 
   StreamSubscription? _batteryChargeStreamSubscription;
+
+  void Function()? _onLowBatteryChargePercentage;
 
   Future<void> _onStarted(
     BatteryLevelSensorStarted event,
@@ -31,6 +35,10 @@ class BatteryLevelSensorBloc
   ) async {
     try {
       if (state is! BatteryLevelSensorInitial) return;
+
+      if (event.onLowBatteryChargePercentage != null) {
+        _onLowBatteryChargePercentage = event.onLowBatteryChargePercentage;
+      }
 
       _batteryChargeStreamSubscription = _batteryLevelSensor
           .onBatteryChargeChanged(const Duration(milliseconds: 1500))
@@ -119,12 +127,19 @@ class BatteryLevelSensorBloc
       final currentState = state;
       if (currentState is! BatteryLevelSensorProcessing) return;
 
+      final isLowBatteryChargePercentage =
+          currentState.batteryChargePercentage <=
+              _batteryLevelSensor.config.lowBatteryChargePercentage;
+
+      if (isLowBatteryChargePercentage &&
+          _onLowBatteryChargePercentage != null) {
+        _onLowBatteryChargePercentage!();
+        _onLowBatteryChargePercentage = null;
+      }
+
       emit(currentState.copyWith(
         batteryChargePercentage: event.batteryChargePercentage,
-        isDisplayOff: currentState.batteryChargePercentage <=
-                _batteryLevelSensor.config.lowBatteryChargePercentage
-            ? true
-            : null,
+        isDisplayOff: isLowBatteryChargePercentage ? true : null,
       ));
     } catch (error, stackTrace) {
       _log(

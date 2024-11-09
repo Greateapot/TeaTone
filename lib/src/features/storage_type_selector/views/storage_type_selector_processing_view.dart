@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teatone/src/features/storage/storage.dart';
 import 'package:teatone/src/features/storage_type_selector/storage_type_selector.dart';
 
 class StorageTypeSelectorProcessingView extends StatefulWidget {
@@ -36,7 +37,7 @@ class _StorageTypeSelectorProcessingViewState
     return Column(
       children: [
         Text(
-          'Select storage type',
+          'Select\nStorage Type',
           style: textTheme.displaySmall?.copyWith(
             color: colorScheme.primary,
           ),
@@ -45,8 +46,8 @@ class _StorageTypeSelectorProcessingViewState
         Divider(
           height: 16.0,
           thickness: 3.0,
-          indent: 40.0,
-          endIndent: 40.0,
+          indent: 36.0,
+          endIndent: 36.0,
           color: colorScheme.primary,
         ),
         Expanded(
@@ -81,11 +82,11 @@ class _StorageTypeSelectorProcessingViewState
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.storageTypes.length,
                   itemBuilder: (context, index) {
-                    final record = state.storageTypes[index];
+                    final storageType = state.storageTypes[index];
 
                     return ListTile(
                       title: Text(
-                        record.name,
+                        _storageTypeToString(storageType),
                         style: textTheme.titleLarge?.copyWith(
                           color: colorScheme.primary,
                         ),
@@ -111,4 +112,9 @@ class _StorageTypeSelectorProcessingViewState
       ],
     );
   }
+
+  String _storageTypeToString(StorageType storageType) => switch (storageType) {
+        StorageType.internal => 'Internal',
+        StorageType.external => 'External',
+      };
 }

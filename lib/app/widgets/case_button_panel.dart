@@ -218,7 +218,7 @@ class CaseButtonPanel extends StatelessWidget {
             RecordSelectingInitiatorType.player));
         context
             .read<RecordSelectorBloc>()
-            .add(RecordSelectorSelectingStarted(parameters.storageType));
+            .add(RecordSelectorSelectingStarted(parameters));
         break;
       default: // skip
     }
@@ -272,7 +272,7 @@ class CaseButtonPanel extends StatelessWidget {
             RecordSelectingInitiatorType.deletor));
         context
             .read<RecordSelectorBloc>()
-            .add(RecordSelectorSelectingStarted(parameters.storageType));
+            .add(RecordSelectorSelectingStarted(parameters));
         break;
       default: // skip
     }
@@ -297,10 +297,14 @@ class CaseButtonPanel extends StatelessWidget {
   }
 
   void _onRecordLongPress(BuildContext context) {
+    final batteryLevelSensorBloc = context.read<BatteryLevelSensorBloc>();
+
+    if (batteryLevelSensorBloc.state.batteryChargePercentage <=
+        batteryLevelSensorBloc
+            .batteryLevelSensorConfig.lowBatteryChargePercentage) return;
+
     context.read<DisplayBloc>().add(const DisplayStateChanged());
-    context
-        .read<BatteryLevelSensorBloc>()
-        .add(const BatteryLevelSensorDisplayStateChanged());
+    batteryLevelSensorBloc.add(const BatteryLevelSensorDisplayStateChanged());
   }
 
   void _onPlayerRecordSelected(BuildContext context, Record record) {

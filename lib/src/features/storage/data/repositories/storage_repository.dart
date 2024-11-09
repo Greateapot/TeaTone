@@ -11,9 +11,13 @@ class StorageRepository {
   final InternalStorageDataProvider _internalStorageDataProvider;
   final ExternalStorageDataProvider _externalStorageDataProvider;
 
-  const StorageRepository()
-      : _internalStorageDataProvider = const InternalStorageDataProvider(),
-        _externalStorageDataProvider = const ExternalStorageDataProvider();
+  const StorageRepository({
+    InternalStorageDataProvider internalStorageDataProvider =
+        const InternalStorageDataProvider(),
+    ExternalStorageDataProvider externalStorageDataProvider =
+        const ExternalStorageDataProvider(),
+  })  : _internalStorageDataProvider = internalStorageDataProvider,
+        _externalStorageDataProvider = externalStorageDataProvider;
 
   Future<bool> deleteRecord(Record record) async {
     final result =

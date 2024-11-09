@@ -29,7 +29,22 @@ class RecordSelectorBloc
       if (state is! RecordSelectorInitial) return;
 
       final List<Record> records =
-          await storageRepository.getRecords(event.storageType);
+          await storageRepository.getRecords(event.parameters.storageType);
+
+      switch (event.parameters.sortMethod) {
+        case SortMethod.az:
+          records.sort((a, b) => a.title.compareTo(b.title));
+          break;
+        case SortMethod.za:
+          records.sort((a, b) => b.title.compareTo(a.title));
+          break;
+        case SortMethod.dt:
+          records.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+          break;
+        case SortMethod.td:
+          records.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          break;
+      }
 
       if (records.isEmpty) {
         emit(const RecordSelectorStorageIsEmpty());
