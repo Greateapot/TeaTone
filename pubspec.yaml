@@ -36,6 +36,21 @@ dev_dependencies:
 
   build_runner: ^2.4.13
 
-flutter:
+  msix: ^3.16.8
 
+flutter:
   uses-material-design: true
+
+msix_config:
+  display_name: TeaTone
+  publisher_display_name: Greateapot
+  identity_name: re.greateapot.TeaTone
+  msix_version: 1.0.0.0
+  logo_path: .\assets\logo.png
+  start_menu_icon_path: .\assets\logo.png
+  tile_icon_path: .\assets\logo.png
+  icons_background_color: transparent
+  architecture: x64
+  capabilities: "microphone"
+  languages: en-US
+  build_windows: false
