@@ -63,5 +63,8 @@ class Display extends StatelessWidget {
         DisplayDeletor() => const DeletorView(),
         DisplayRecordSelector() => const RecordSelectorView(),
         DisplayFailed() => const FailedView(),
+        DisplayParameterSelector() => const ParameterSelectorView(),
+        DisplaySortMethodSelector() => const SortMethodSelectorView(),
+        DisplayStorageTypeSelector() => const StorageTypeSelectorView(),
       };
 }

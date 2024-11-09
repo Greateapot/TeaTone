@@ -2,15 +2,20 @@ import 'dart:math' show Random;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teatone/app/app.dart' show CaseButtonPanel;
+
+// features
 import 'package:teatone/src/features/battery_level_sensor/battery_level_sensor.dart';
 import 'package:teatone/src/features/deletor/deletor.dart';
 import 'package:teatone/src/features/parameters/parameters.dart';
+import 'package:teatone/src/features/parameter_selector/parameter_selector.dart';
 import 'package:teatone/src/features/player/player.dart';
 import 'package:teatone/src/features/record_selector/record_selector.dart';
 import 'package:teatone/src/features/recorder/recorder.dart';
+import 'package:teatone/src/features/sort_method_selector/sort_method_selector.dart';
 import 'package:teatone/src/features/storage/storage.dart';
 import 'package:teatone/src/features/display/display.dart';
-import 'package:teatone/app/app.dart' show CaseButtonPanel;
+import 'package:teatone/src/features/storage_type_selector/storage_type_selector.dart';
 
 class App extends StatelessWidget {
   static const String title = "TeaTone";
@@ -60,7 +65,12 @@ class AppView extends StatelessWidget {
         BlocProvider<ParametersBloc>(
           lazy: false,
           create: (context) =>
-              ParametersBloc(storageRepository)..add(const ParametersLoad()),
+              ParametersBloc(storageRepository)..add(const ParametersLoaded()),
+        ),
+        BlocProvider<BatteryLevelSensorBloc>(
+          lazy: false,
+          create: (context) =>
+              BatteryLevelSensorBloc()..add(const BatteryLevelSensorStarted()),
         ),
         BlocProvider<RecorderBloc>(
           create: (context) => RecorderBloc(storageRepository),
@@ -68,15 +78,20 @@ class AppView extends StatelessWidget {
         BlocProvider<PlayerBloc>(
           create: (context) => PlayerBloc(storageRepository),
         ),
-        BlocProvider<RecordSelectorBloc>(
-          create: (context) => RecordSelectorBloc(storageRepository),
-        ),
         BlocProvider<DeletorBloc>(
           create: (context) => DeletorBloc(storageRepository),
         ),
-        BlocProvider<BatteryLevelSensorBloc>(
-          create: (context) =>
-              BatteryLevelSensorBloc()..add(const BatteryLevelSensorStarted()),
+        BlocProvider<RecordSelectorBloc>(
+          create: (context) => RecordSelectorBloc(storageRepository),
+        ),
+        BlocProvider<StorageTypeSelectorBloc>(
+          create: (context) => StorageTypeSelectorBloc(storageRepository),
+        ),
+        BlocProvider<SortMethodSelectorBloc>(
+          create: (context) => SortMethodSelectorBloc(),
+        ),
+        BlocProvider<ParameterSelectorBloc>(
+          create: (context) => ParameterSelectorBloc(),
         ),
       ],
       child: const Scaffold(

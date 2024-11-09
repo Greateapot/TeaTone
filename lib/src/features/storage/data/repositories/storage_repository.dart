@@ -60,6 +60,17 @@ class StorageRepository {
     }
   }
 
+  Future<bool> setParameters(Parameters parameters) async {
+    final String contents = jsonEncode(parameters.toJson());
+
+    final result = await _internalStorageDataProvider.write(
+      parametersFilename,
+      contents,
+    );
+
+    return result!;
+  }
+
   Future<List<Record>> getRecords(StorageType type) async {
     final entities = await _getStorageDatasourceByType(type).list();
 

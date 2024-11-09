@@ -7,3 +7,6 @@ export 'home_view.dart';
 export 'player_view.dart';
 export 'record_selector_view.dart';
 export 'failed_view.dart';
+export 'parameter_selector_view.dart';
+export 'sort_method_selector_view.dart';
+export 'storage_type_selector_view.dart';

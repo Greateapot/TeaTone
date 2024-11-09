@@ -1,7 +1,7 @@
 part of 'parameters_bloc.dart';
 
 sealed class ParametersState extends Equatable {
-  const ParametersState(this.parameters);
+  const ParametersState({this.parameters});
 
   final Parameters? parameters;
 
@@ -10,9 +10,5 @@ sealed class ParametersState extends Equatable {
 }
 
 final class ParametersInitial extends ParametersState {
-  const ParametersInitial() : super(null);
-}
-
-final class ParametersLoaded extends ParametersState {
-  const ParametersLoaded({required Parameters parameters}) : super(parameters);
+  const ParametersInitial({super.parameters});
 }

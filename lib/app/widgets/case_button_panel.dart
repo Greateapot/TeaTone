@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+// features
 import 'package:teatone/src/features/battery_level_sensor/battery_level_sensor.dart';
 import 'package:teatone/src/features/deletor/deletor.dart';
 import 'package:teatone/src/features/display/display.dart';
+import 'package:teatone/src/features/parameter_selector/parameter_selector.dart';
 import 'package:teatone/src/features/parameters/parameters.dart';
 import 'package:teatone/src/features/player/player.dart';
 import 'package:teatone/src/features/record_selector/record_selector.dart';
 import 'package:teatone/src/features/recorder/recorder.dart';
+import 'package:teatone/src/features/sort_method_selector/sort_method_selector.dart';
 import 'package:teatone/src/features/storage/storage.dart';
+import 'package:teatone/src/features/storage_type_selector/storage_type_selector.dart';
 
 import 'case_button.dart';
 import 'case_buttons_row.dart';
@@ -23,8 +28,8 @@ class CaseButtonPanel extends StatelessWidget {
     switch (displayState) {
       case DisplayDeletor():
         context.read<DeletorBloc>().add(DeletorConfirmed(
-              onSuccess: () => _onDeletorSuccess(context),
-              onFailure: () => _onDeletorFailure(context),
+              onSuccess: () => _onSuccess(context),
+              onFailure: () => _onFailure(context),
             ));
         break;
       case DisplayRecordSelector():
@@ -32,6 +37,27 @@ class CaseButtonPanel extends StatelessWidget {
               displayState.type == RecordSelectingInitiatorType.player
                   ? (record) => _onPlayerRecordSelected(context, record)
                   : (record) => _onDeletorRecordSelected(context, record),
+            ));
+        break;
+      case DisplayParameterSelector():
+        context
+            .read<ParameterSelectorBloc>()
+            .add(ParameterSelectorSelectingCompleted(
+              (parameter) => _onParameterSelected(context, parameter),
+            ));
+        break;
+      case DisplaySortMethodSelector():
+        context
+            .read<SortMethodSelectorBloc>()
+            .add(SortMethodSelectorSelectingCompleted(
+              (sortMethod) => _onSortMethodSelected(context, sortMethod),
+            ));
+        break;
+      case DisplayStorageTypeSelector():
+        context
+            .read<StorageTypeSelectorBloc>()
+            .add(StorageTypeSelectorSelectingCompleted(
+              (storageType) => _onStorageTypeSelected(context, storageType),
             ));
         break;
       default: // skip
@@ -43,16 +69,31 @@ class CaseButtonPanel extends StatelessWidget {
 
     if (displayState.isDisplayOff) return;
 
+    context.read<DisplayBloc>().add(const DisplayCanceledDisplayed());
+
     switch (displayState) {
       case DisplayDeletor():
-        context.read<DisplayBloc>().add(const DisplayCanceledDisplayed());
         context.read<DeletorBloc>().add(const DeletorCanceled());
         break;
       case DisplayRecordSelector():
-        context.read<DisplayBloc>().add(const DisplayCanceledDisplayed());
         context
             .read<RecordSelectorBloc>()
             .add(const RecordSelectorSelectingCanceled());
+        break;
+      case DisplayParameterSelector():
+        context
+            .read<ParameterSelectorBloc>()
+            .add(const ParameterSelectorSelectingCanceled());
+        break;
+      case DisplaySortMethodSelector():
+        context
+            .read<SortMethodSelectorBloc>()
+            .add(const SortMethodSelectorSelectingCanceled());
+        break;
+      case DisplayStorageTypeSelector():
+        context
+            .read<StorageTypeSelectorBloc>()
+            .add(const StorageTypeSelectorSelectingCanceled());
         break;
       default: // skip
     }
@@ -69,6 +110,21 @@ class CaseButtonPanel extends StatelessWidget {
             .read<RecordSelectorBloc>()
             .add(const RecordSelectorPreviousSelected());
         break;
+      case DisplayParameterSelector():
+        context
+            .read<ParameterSelectorBloc>()
+            .add(const ParameterSelectorPreviousSelected());
+        break;
+      case DisplaySortMethodSelector():
+        context
+            .read<SortMethodSelectorBloc>()
+            .add(const SortMethodSelectorPreviousSelected());
+        break;
+      case DisplayStorageTypeSelector():
+        context
+            .read<StorageTypeSelectorBloc>()
+            .add(const StorageTypeSelectorPreviousSelected());
+        break;
       default: // skip
     }
   }
@@ -83,6 +139,21 @@ class CaseButtonPanel extends StatelessWidget {
         context
             .read<RecordSelectorBloc>()
             .add(const RecordSelectorNextSelected());
+        break;
+      case DisplayParameterSelector():
+        context
+            .read<ParameterSelectorBloc>()
+            .add(const ParameterSelectorNextSelected());
+        break;
+      case DisplaySortMethodSelector():
+        context
+            .read<SortMethodSelectorBloc>()
+            .add(const SortMethodSelectorNextSelected());
+        break;
+      case DisplayStorageTypeSelector():
+        context
+            .read<StorageTypeSelectorBloc>()
+            .add(const StorageTypeSelectorNextSelected());
         break;
       default: // skip
     }
@@ -147,7 +218,7 @@ class CaseButtonPanel extends StatelessWidget {
             RecordSelectingInitiatorType.player));
         context
             .read<RecordSelectorBloc>()
-            .add(RecordSelectorStarted(parameters.storageType));
+            .add(RecordSelectorSelectingStarted(parameters.storageType));
         break;
       default: // skip
     }
@@ -201,13 +272,29 @@ class CaseButtonPanel extends StatelessWidget {
             RecordSelectingInitiatorType.deletor));
         context
             .read<RecordSelectorBloc>()
-            .add(RecordSelectorStarted(parameters.storageType));
+            .add(RecordSelectorSelectingStarted(parameters.storageType));
         break;
       default: // skip
     }
   }
 
-  void _onParametersPressed(BuildContext context) {}
+  void _onParametersPressed(BuildContext context) {
+    final displayState = context.read<DisplayBloc>().state;
+
+    if (displayState.isDisplayOff) return;
+
+    switch (displayState) {
+      case DisplayHome():
+        context
+            .read<DisplayBloc>()
+            .add(const DisplayParameterSelectorDisplayed());
+        context
+            .read<ParameterSelectorBloc>()
+            .add(const ParameterSelectorSelectingStarted());
+        break;
+      default: // skip
+    }
+  }
 
   void _onRecordLongPress(BuildContext context) {
     context.read<DisplayBloc>().add(const DisplayStateChanged());
@@ -216,23 +303,69 @@ class CaseButtonPanel extends StatelessWidget {
         .add(const BatteryLevelSensorDisplayStateChanged());
   }
 
-  void _onPlayerRecordSelected(BuildContext context, dynamic record) {
+  void _onPlayerRecordSelected(BuildContext context, Record record) {
     context.read<DisplayBloc>().add(const DisplayPlayerDisplayed());
     context
         .read<PlayerBloc>()
         .add(PlayerStarted(record, () => _onPlayerStopped(context)));
   }
 
-  void _onDeletorRecordSelected(BuildContext context, dynamic record) {
+  void _onDeletorRecordSelected(BuildContext context, Record record) {
     context.read<DisplayBloc>().add(const DisplayDeletorDisplayed());
     context.read<DeletorBloc>().add(DeletorStarted(record));
   }
 
-  void _onDeletorSuccess(BuildContext context) {
+  void _onParameterSelected(BuildContext context, Parameter parameter) {
+    switch (parameter) {
+      case Parameter.sortMethod:
+        final parameters = context.read<ParametersBloc>().state.parameters ??
+            Parameters.defaults();
+
+        context
+            .read<DisplayBloc>()
+            .add(const DisplaySortMethodSelectorDisplayed());
+        context
+            .read<SortMethodSelectorBloc>()
+            .add(SortMethodSelectorSelectingStarted(parameters.sortMethod));
+
+        break;
+      case Parameter.storageType:
+        final parameters = context.read<ParametersBloc>().state.parameters ??
+            Parameters.defaults();
+
+        context
+            .read<DisplayBloc>()
+            .add(const DisplayStorageTypeSelectorDisplayed());
+        context
+            .read<StorageTypeSelectorBloc>()
+            .add(StorageTypeSelectorSelectingStarted(parameters.storageType));
+
+        break;
+      default: // skip
+    }
+  }
+
+  void _onSortMethodSelected(BuildContext context, SortMethod sortMethod) {
+    context.read<ParametersBloc>().add(ParametersUpdated(
+          sortMethod: sortMethod,
+          onSuccess: () => _onSuccess(context),
+          onFailure: () => _onFailure(context),
+        ));
+  }
+
+  void _onStorageTypeSelected(BuildContext context, StorageType storageType) {
+    context.read<ParametersBloc>().add(ParametersUpdated(
+          storageType: storageType,
+          onSuccess: () => _onSuccess(context),
+          onFailure: () => _onFailure(context),
+        ));
+  }
+
+  void _onSuccess(BuildContext context) {
     context.read<DisplayBloc>().add(const DisplayDoneDisplayed());
   }
 
-  void _onDeletorFailure(BuildContext context) {
+  void _onFailure(BuildContext context) {
     context.read<DisplayBloc>().add(const DisplayFailedDisplayed());
   }
 

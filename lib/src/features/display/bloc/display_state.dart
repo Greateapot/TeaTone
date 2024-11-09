@@ -81,3 +81,27 @@ final class DisplayRecordSelector extends DisplayState {
   @override
   List<Object> get props => [isDisplayOff, type];
 }
+
+final class DisplayParameterSelector extends DisplayState {
+  const DisplayParameterSelector({required super.isDisplayOff});
+
+  @override
+  DisplayParameterSelector copyWith({required bool isDisplayOff}) =>
+      DisplayParameterSelector(isDisplayOff: isDisplayOff);
+}
+
+final class DisplaySortMethodSelector extends DisplayState {
+  const DisplaySortMethodSelector({required super.isDisplayOff});
+
+  @override
+  DisplaySortMethodSelector copyWith({required bool isDisplayOff}) =>
+      DisplaySortMethodSelector(isDisplayOff: isDisplayOff);
+}
+
+final class DisplayStorageTypeSelector extends DisplayState {
+  const DisplayStorageTypeSelector({required super.isDisplayOff});
+
+  @override
+  DisplayStorageTypeSelector copyWith({required bool isDisplayOff}) =>
+      DisplayStorageTypeSelector(isDisplayOff: isDisplayOff);
+}

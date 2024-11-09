@@ -7,6 +7,21 @@ sealed class ParametersEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class ParametersLoad extends ParametersEvent {
-  const ParametersLoad();
+final class ParametersLoaded extends ParametersEvent {
+  const ParametersLoaded();
+}
+
+final class ParametersUpdated extends ParametersEvent {
+  const ParametersUpdated({
+    this.sortMethod,
+    this.storageType,
+    this.onSuccess,
+    this.onFailure,
+  });
+
+  final SortMethod? sortMethod;
+  final StorageType? storageType;
+
+  final void Function()? onSuccess;
+  final void Function()? onFailure;
 }

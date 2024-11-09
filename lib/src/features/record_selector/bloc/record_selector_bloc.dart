@@ -12,7 +12,7 @@ class RecordSelectorBloc
     extends Bloc<RecordSelectorEvent, RecordSelectorState> {
   RecordSelectorBloc(this.storageRepository)
       : super(const RecordSelectorInitial()) {
-    on<RecordSelectorStarted>(_onStarted);
+    on<RecordSelectorSelectingStarted>(_onSelectingStarted);
     on<RecordSelectorPreviousSelected>(_onPreviousSelected);
     on<RecordSelectorNextSelected>(_onNextSelected);
     on<RecordSelectorSelectingCanceled>(_onSelectingCanceled);
@@ -21,8 +21,8 @@ class RecordSelectorBloc
 
   final StorageRepository storageRepository;
 
-  void _onStarted(
-    RecordSelectorStarted event,
+  void _onSelectingStarted(
+    RecordSelectorSelectingStarted event,
     Emitter<RecordSelectorState> emit,
   ) async {
     try {
@@ -38,7 +38,7 @@ class RecordSelectorBloc
       }
     } catch (error, stackTrace) {
       _log(
-        "Encountered an error in RecordSelectorBloc._onStarted",
+        "Encountered an error in RecordSelectorBloc._onSelectingStarted",
         error: error,
         stackTrace: stackTrace,
       );

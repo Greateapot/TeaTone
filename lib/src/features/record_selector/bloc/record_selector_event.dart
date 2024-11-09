@@ -7,9 +7,9 @@ sealed class RecordSelectorEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class RecordSelectorStarted extends RecordSelectorEvent {
+final class RecordSelectorSelectingStarted extends RecordSelectorEvent {
   /// on play/delete pressed (two-phased events)
-  const RecordSelectorStarted(this.storageType);
+  const RecordSelectorSelectingStarted(this.storageType);
 
   final StorageType storageType;
 }

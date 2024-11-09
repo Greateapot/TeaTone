@@ -44,3 +44,15 @@ final class DisplayRecordSelectorDisplayed extends DisplayEvent {
 
   final RecordSelectingInitiatorType type;
 }
+
+final class DisplayParameterSelectorDisplayed extends DisplayEvent {
+  const DisplayParameterSelectorDisplayed();
+}
+
+final class DisplaySortMethodSelectorDisplayed extends DisplayEvent {
+  const DisplaySortMethodSelectorDisplayed();
+}
+
+final class DisplayStorageTypeSelectorDisplayed extends DisplayEvent {
+  const DisplayStorageTypeSelectorDisplayed();
+}

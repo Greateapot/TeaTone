@@ -16,6 +16,9 @@ class DisplayBloc extends Bloc<DisplayEvent, DisplayState> {
     on<DisplayPlayerDisplayed>(_onPlayerDisplayed);
     on<DisplayDeletorDisplayed>(_onDeletorDisplayed);
     on<DisplayRecordSelectorDisplayed>(_onRecordSelectorDisplayed);
+    on<DisplayParameterSelectorDisplayed>(_onParameterSelectorDisplayed);
+    on<DisplaySortMethodSelectorDisplayed>(_onSortMethodSelectorDisplayed);
+    on<DisplayStorageTypeSelectorDisplayed>(_onStorageTypeSelectorDisplayed);
   }
 
   final Duration noticeDelay;
@@ -99,5 +102,26 @@ class DisplayBloc extends Bloc<DisplayEvent, DisplayState> {
       event.type,
       isDisplayOff: state.isDisplayOff,
     ));
+  }
+
+  void _onParameterSelectorDisplayed(
+    DisplayParameterSelectorDisplayed event,
+    Emitter<DisplayState> emit,
+  ) async {
+    emit(DisplayParameterSelector(isDisplayOff: state.isDisplayOff));
+  }
+
+  void _onSortMethodSelectorDisplayed(
+    DisplaySortMethodSelectorDisplayed event,
+    Emitter<DisplayState> emit,
+  ) async {
+    emit(DisplaySortMethodSelector(isDisplayOff: state.isDisplayOff));
+  }
+
+  void _onStorageTypeSelectorDisplayed(
+    DisplayStorageTypeSelectorDisplayed event,
+    Emitter<DisplayState> emit,
+  ) async {
+    emit(DisplayStorageTypeSelector(isDisplayOff: state.isDisplayOff));
   }
 }
