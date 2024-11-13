@@ -95,6 +95,21 @@ class AppView extends StatelessWidget {
 
     if (!displayBloc.state.isDisplayOff) {
       displayBloc.add(const DisplayStateChanged());
+      context.read<RecorderBloc>().add(const RecorderStopped());
+      context.read<PlayerBloc>().add(const PlayerStopped());
+      context.read<DeletorBloc>().add(const DeletorCanceled());
+      context
+          .read<RecordSelectorBloc>()
+          .add(const RecordSelectorSelectingCanceled());
+      context
+          .read<ParameterSelectorBloc>()
+          .add(const ParameterSelectorSelectingCanceled());
+      context
+          .read<SortMethodSelectorBloc>()
+          .add(const SortMethodSelectorSelectingCanceled());
+      context
+          .read<StorageTypeSelectorBloc>()
+          .add(const StorageTypeSelectorSelectingCanceled());
       context
           .read<BatteryLevelSensorBloc>()
           .add(const BatteryLevelSensorDisplayStateChanged());

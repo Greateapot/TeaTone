@@ -13,10 +13,12 @@ class DisplayPlayerView extends StatelessWidget {
       builder: (context, state) => switch (state) {
         PlayerInitial() => const DisplayLoadingView(),
         PlayerRunInProgress() => PlayerRunInProgressView(
+            title: state.title!,
             duration: state.duration,
             position: state.position,
           ),
         PlayerRunPause() => PlayerRunPauseView(
+            title: state.title!,
             duration: state.duration,
             position: state.position,
           ),

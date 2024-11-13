@@ -241,18 +241,23 @@ class CaseButtonPanel extends StatelessWidget {
   }
 
   void _onStopPressed(BuildContext context) {
-    final displayState = context.read<DisplayBloc>().state;
+    final displayBloc = context.read<DisplayBloc>();
 
-    if (displayState.isDisplayOff) return;
+    if (displayBloc.state.isDisplayOff) return;
 
-    switch (displayState) {
+    switch (displayBloc.state) {
       case DisplayPlayer():
-        context.read<DisplayBloc>().add(const DisplayHomeDisplayed());
+        displayBloc.add(const DisplayHomeDisplayed());
         context.read<PlayerBloc>().add(const PlayerStopped());
         break;
       case DisplayRecorder():
-        context.read<DisplayBloc>().add(const DisplayHomeDisplayed());
         context.read<RecorderBloc>().add(const RecorderStopped());
+
+        /// Think about it, потому что выглядит это так себе.
+        Future.delayed(
+          const Duration(seconds: 4),
+          () => displayBloc.add(const DisplayHomeDisplayed()),
+        );
         break;
       default: // skip
     }

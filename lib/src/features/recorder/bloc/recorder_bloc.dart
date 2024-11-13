@@ -39,12 +39,16 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
       if (!await _audioRecorder.hasPermission()) return;
       if (!await _isEncoderSupported(encoder)) return;
 
-      final path = await storageRepository.getNewRecordName(event.storageType);
+      final (path, title) =
+          await storageRepository.getNewRecordName(event.storageType);
 
       await _audioRecorder.start(config, path: path);
       await _startTimer();
 
-      emit(const RecorderRunInProgress(duration: 0));
+      emit(RecorderRunInProgress(
+        duration: 0,
+        title: title,
+      ));
     } catch (error, stackTrace) {
       _log(
         "Encountered an error in RecorderBloc._onStarted",
@@ -64,13 +68,19 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
         await _audioRecorder.pause();
         _tickerStreamSubscription?.pause();
 
-        emit(RecorderRunPause(duration: state.duration));
+        emit(RecorderRunPause(
+          duration: state.duration,
+          title: state.title,
+        ));
       } else if (state is RecorderRunPause) {
         /// recorded resumed
         await _audioRecorder.resume();
         _tickerStreamSubscription?.resume();
 
-        emit(RecorderRunInProgress(duration: state.duration));
+        emit(RecorderRunInProgress(
+          duration: state.duration,
+          title: state.title,
+        ));
       }
     } catch (error, stackTrace) {
       _log(
@@ -112,7 +122,14 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
       await _audioRecorder.stop();
       await _tickerStreamSubscription?.cancel();
 
-      emit(const RecorderInitial());
+      emit(RecorderCompleted(
+        duration: state.duration,
+        title: state.title,
+      ));
+      await Future.delayed(
+        const Duration(seconds: 3),
+        () => emit(const RecorderInitial()),
+      );
     } catch (error, stackTrace) {
       _log(
         "Encountered an error in RecorderBloc._onStopped",
@@ -129,7 +146,10 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState> {
     try {
       if (state is! RecorderRunInProgress) return;
 
-      emit(RecorderRunInProgress(duration: state.duration + 1));
+      emit(RecorderRunInProgress(
+        duration: state.duration + 1,
+        title: state.title,
+      ));
     } catch (error, stackTrace) {
       _log(
         "Encountered an error in RecorderBloc._onTicked",

@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:teatone/src/features/storage/storage.dart';
 
 class StorageRepository {
   static const String parametersFilename = '.params';
+  static final DateFormat dateFormat = DateFormat('ss-mm-HH dd-MM-yyyy');
 
   final InternalStorageDataProvider _internalStorageDataProvider;
   final ExternalStorageDataProvider _externalStorageDataProvider;
@@ -29,17 +31,16 @@ class StorageRepository {
     return result;
   }
 
-  Future<String> getNewRecordName(StorageType type) async {
+  Future<(String path, String title)> getNewRecordName(StorageType type) async {
     final storageDirectory =
         await _getStorageDatasourceByType(type).getStorageDirectory();
 
     // only extmem may be unavailable
     if (storageDirectory == null) throw const StorageIsUnavailableException();
 
-    return pathlib.join(
-      storageDirectory.path,
-      'teatone_${DateTime.now().millisecondsSinceEpoch}.m4a',
-    );
+    final title = 'teatone ${dateFormat.format(DateTime.now())}.m4a';
+
+    return (pathlib.join(storageDirectory.path, title), title);
   }
 
   Future<Parameters> getParameters() async {

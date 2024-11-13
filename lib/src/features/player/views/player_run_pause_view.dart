@@ -7,7 +7,10 @@ class PlayerRunPauseView extends StatelessWidget {
     super.key,
     this.duration,
     this.position,
+    required this.title,
   });
+
+  final String title;
 
   final Duration? duration;
   final Duration? position;
@@ -23,6 +26,13 @@ class PlayerRunPauseView extends StatelessWidget {
         Text(
           'Playing Paused',
           style: textTheme.displaySmall?.copyWith(
+            color: colorScheme.primary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          'Title: $title',
+          style: textTheme.titleLarge?.copyWith(
             color: colorScheme.primary,
           ),
           textAlign: TextAlign.center,
@@ -45,9 +55,10 @@ class PlayerRunPauseView extends StatelessWidget {
           children: [
             TimerWidget(
               duration: position?.inSeconds ?? 0,
-              style: textTheme.displaySmall?.copyWith(
+              style: textTheme.titleLarge?.copyWith(
                 color: colorScheme.primary,
               ),
+              blinking: true,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -58,7 +69,7 @@ class PlayerRunPauseView extends StatelessWidget {
             ),
             TimerWidget(
               duration: duration?.inSeconds ?? 0,
-              style: textTheme.displaySmall?.copyWith(
+              style: textTheme.titleLarge?.copyWith(
                 color: colorScheme.primary,
               ),
             ),

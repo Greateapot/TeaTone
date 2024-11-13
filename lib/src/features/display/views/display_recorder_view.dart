@@ -15,6 +15,10 @@ class DisplayRecorderView extends StatelessWidget {
         RecorderRunInProgress() =>
           RecorderInProgressView(duration: state.duration),
         RecorderRunPause() => RecorderPausedView(duration: state.duration),
+        RecorderCompleted() => RecorderCompletedView(
+            duration: state.duration,
+            title: state.title!,
+          ),
       },
     );
   }

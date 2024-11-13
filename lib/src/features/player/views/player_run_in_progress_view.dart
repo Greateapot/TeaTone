@@ -7,7 +7,10 @@ class PlayerRunInProgressView extends StatelessWidget {
     super.key,
     this.duration,
     this.position,
+    required this.title,
   });
+
+  final String title;
 
   final Duration? duration;
   final Duration? position;
@@ -23,6 +26,13 @@ class PlayerRunInProgressView extends StatelessWidget {
         Text(
           'Playing In Progress',
           style: textTheme.displaySmall?.copyWith(
+            color: colorScheme.primary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          'Title: $title',
+          style: textTheme.titleLarge?.copyWith(
             color: colorScheme.primary,
           ),
           textAlign: TextAlign.center,
@@ -45,7 +55,7 @@ class PlayerRunInProgressView extends StatelessWidget {
           children: [
             TimerWidget(
               duration: position?.inSeconds ?? 0,
-              style: textTheme.displaySmall?.copyWith(
+              style: textTheme.titleLarge?.copyWith(
                 color: colorScheme.primary,
               ),
             ),
@@ -58,7 +68,7 @@ class PlayerRunInProgressView extends StatelessWidget {
             ),
             TimerWidget(
               duration: duration?.inSeconds ?? 0,
-              style: textTheme.displaySmall?.copyWith(
+              style: textTheme.titleLarge?.copyWith(
                 color: colorScheme.primary,
               ),
             ),

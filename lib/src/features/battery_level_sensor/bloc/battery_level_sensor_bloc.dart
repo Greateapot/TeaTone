@@ -12,7 +12,12 @@ part 'battery_level_sensor_state.dart';
 class BatteryLevelSensorBloc
     extends Bloc<BatteryLevelSensorEvent, BatteryLevelSensorState> {
   BatteryLevelSensorBloc() : super(const BatteryLevelSensorInitial()) {
-    batteryLevelSensorConfig = const BatteryLevelSensorConfig();
+    batteryLevelSensorConfig = const BatteryLevelSensorConfig(
+
+        /// Best vars for battery lock demo
+        // batteryDischargeRateWithDisplayOn: 0.3,
+        // lowBatteryChargePercentage: 99,
+        );
     _batteryLevelSensor = BatteryLevelSensor(
       config: batteryLevelSensorConfig,
     );

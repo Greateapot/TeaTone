@@ -59,6 +59,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       await _audioPlayer.resume();
 
       emit(PlayerRunInProgress(
+        title: event.record.title,
         duration: duration,
         position: position,
       ));
@@ -81,6 +82,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         await _audioPlayer.pause();
 
         emit(PlayerRunPause(
+          title: state.title,
           duration: state.duration,
           position: state.position,
         ));
@@ -89,6 +91,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         await _audioPlayer.resume();
 
         emit(PlayerRunInProgress(
+          title: state.title,
           duration: state.duration,
           position: state.position,
         ));
@@ -195,11 +198,13 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     try {
       if (state is PlayerRunInProgress) {
         emit(PlayerRunInProgress(
+          title: state.title,
           position: event.position,
           duration: state.duration,
         ));
       } else if (state is PlayerRunPause) {
         emit(PlayerRunPause(
+          title: state.title,
           position: event.position,
           duration: state.duration,
         ));
